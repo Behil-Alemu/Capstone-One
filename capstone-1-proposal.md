@@ -11,11 +11,12 @@ which is fine, just outline what kind of data you would like it to contain.
 know everything in advance and that these details might change later). Answer
 questions like the ones below, but feel free to add more information:
     -  What does your database schema look like?
+
 **users_table**
-| id          | username    |  email           |    Avatar      | social_media    |  bio                     | password|
-| :---        |    :----:   |      :----:      |   :----:       |    :----:       |     :----:               |    ---: |
-| 1           | "John "       | "john@gmail.com "  |      "url "      | "john_insta"      | "I am an artist"         |  $2b$8gj|
-| 2           | "smith"       | "smith@gmail.com  "|      "url "      | "smith_snap"      | "I want to me an artist" | $2b$8gg |
+| id          | username      |  email             |    Avatar      | social_media      |  bio                     |  password   |
+| :---        |    :----:     |      :----:        |   :----:       |    :----:         |     :----:               |    ---:     |
+| 1           | "John "       | "john@gmail.com "  |      "url "    | "john_insta"      | "I am an artist"         |  $2b$8gj    |
+| 2           | "smith"       | "smith@gmail.com  "|      "url "    | "smith_snap"      | "I want to me an artist" |  $2b$8gg    |
 
 **post_table**
 | id      | description         | title         | imageURL|
