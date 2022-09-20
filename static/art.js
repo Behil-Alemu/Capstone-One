@@ -21,3 +21,9 @@
 // }
 // five_art_piece()
 // });
+
+
+
+// seach with q= then display the first few searches(view more butten at the bottom)
+// user can put in date to search (dateBegin=1700&dateEnd=1800)
+// maybe later! add an interactive map to see art based on artist country
