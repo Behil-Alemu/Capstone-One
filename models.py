@@ -1,14 +1,17 @@
 """Models for Metropolitan Museum of Art project."""
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
 import datetime
 
+from requests import post
+
+bcrypt = Bcrypt()
 db = SQLAlchemy()
 
-default_url=""
 
 class User(db.Model):
     """Make a table with user info"""
-    __tablename__='user'
+    __tablename__='users'
 
     id = db.Column(db.Integer,primary_key=True,autoincrement=True)
 
@@ -16,15 +19,21 @@ class User(db.Model):
 
     email = db.Column(db.Text,nullable=False,unique=True)
 
-    avatar = db.Column(db.Text,nullable=False, default="/static/images/default-pic.png")
+    avatar = db.Column(db.Text,nullable=False, default="https://tinyurl.com/demo-cupcake")
 
     social_media = db.Column(db.Text,nullable=True,)
 
     bio = db.Column(db.Text)
 
     password = db.Column(db.Text,nullable=False)
-
     
+    posts = db.relationship('Post',backref='users')
+    inspiration=db.relationship('Inspiration'
+    )
+   
+
+    def __repr__(self):
+        return f"<User #{self.id}: {self.username}, {self.email}>"
     
     @classmethod
     def signup(cls, username, email, password, avatar):
@@ -44,6 +53,7 @@ class User(db.Model):
 
         db.session.add(user)
         return user
+
 
     @classmethod
     def authenticate(cls, username, password):
@@ -73,11 +83,11 @@ class Post(db.Model):
 
     description= db.Column(db.Text, nullable=True, unique=False)
 
-    imageURL = db.Column(db.Text,nullable=False,default=default_url)
+    imageURL = db.Column(db.Text,nullable=False,default="https://tinyurl.com/demo-cupcake")
 
     created_at=db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     @property
     def friendly_date(self):
@@ -91,7 +101,9 @@ class Likes(db.Model):
 
     post_id = db.Column(db.Integer,db.ForeignKey("post.id", ondelete='cascade'),primary_key=True)
 
-    user_id = db.Column(db.Integer,db.ForeignKey("user.id", ondelete='cascade'),primary_key=True)
+    user_id = db.Column(db.Integer,db.ForeignKey("users.id", ondelete='cascade'),primary_key=True)
+    posts = db.relationship('Post',backref='like')
+    user = db.relationship('User',backref='like')
 
 
 class Inspiration(db.Model):
@@ -101,7 +113,10 @@ class Inspiration(db.Model):
     id = db.Column(db.Integer,primary_key=True,autoincrement=True)
 
     inspiration = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.Integer,db.ForeignKey("user.id"),primary_key=True)
+
+    user_id = db.Column(db.Integer,db.ForeignKey("users.id"), primary_key=True)
+
+    users = db.relationship('User',backref='inpiration')
 
 
 def connect_db(app):
