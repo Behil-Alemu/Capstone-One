@@ -47,17 +47,21 @@ def homepage():
     data = res.json()
    
     ten_random = sample(list(data['objectIDs']), 10)
-    print(ten_random)
-
+    img_list=[]
     
-    data_url= data["objectIDs"][0]
-  
-    object_res = requests.get(f"{objectIDs_api}{data_url}")
-    object_data=object_res.json()
-    image_url= object_data["primaryImage"]
+    for rand in range(len(ten_random)):
+        object_res = requests.get(f"{objectIDs_api}{ten_random[rand]}")
+        object_data=object_res.json()
+        print(object_data)
+        image= object_data.get("primaryImage")
+        if image:
+            img_list.append(image)
+        
+    return render_template('home/home.html', img_list=img_list)
+    # data_url= data["objectIDs"][0]
 
 
-    return render_template('home/home.html', image=image_url)
+   
 
 
 
@@ -171,57 +175,51 @@ def messages_add():
         return redirect("/posts")
     return render_template('posts/addpost.html', form=form)
 
-@app.route('/posts/user', methods=["GET"])
-def show_posts():
-    """Show a message."""
-    if g.user:
-        post = (Post.query.order_by(Post.created_at.desc()).limit(15).all())
-        likes= [post.id for post in g.user.likes]
-        return render_template('posts/show.html', post=post, likes=likes)
-    else:
-        return render_template('home/home-anon.html')
+
 
 ##############################################################################
 #  users pofile:
-@app.route('/users/<int:user_id>')
-def users_show(user_id):
-    """Show user profile."""
+@app.route('/users/<int:user_id>', methods=["GET"])
+def show_user_info(user_id):
+    """Show user profile and posts."""
 
     user = User.query.get_or_404(user_id)
+    if g.user:
+        post = (Post
+                    .query
+                    .filter(Post.user_id==user_id)
+                    .order_by(Post.created_at.desc())
+                    .limit(15)
+                    .all())
+        
+        # likes=[post.id for post in g.user.likes]
+        return render_template('users/show.html', post=post, user=user)
 
-    return render_template('users/show.html', user=user)
+    else:
+        return render_template('home/home-anon.html')
+
 
 @app.route('/users/profile', methods=["GET", "POST"])
-def profile():
+def edit_profile():
     """Update profile for current user."""
 
     if not g.user:
         flash("Access unauthorized.", "danger")
-        return redirect(f"/users/{g.user.id}")
+        return redirect("/")
 
     user=g.user
-    form = UserEditForm()
+    form = UserEditForm(obj=user)
 
     if form.validate_on_submit():
-        try:
-            if User.authenticate(user.username,form.password.data):
-                user.email=form.email.data
-                user.image_url=form.image_url.data or User.image_url.default.arg
-                user.bio=form.bio.data
-                user.location=form.location.data
-                user.header_image_url=form.header_image_url.data
+        if User.authenticate(user.username,form.password.data):
+            user.email=form.email.data
+            user.avatar=form.avatar.data or User.image_url.default.arg
+            user.bio=form.bio.data
+            user.social_media=form.social_media.data
 
-                db.session.commit()
-        except IntegrityError:
-            flash("Wrong password", 'danger')
-            return render_template('users/edit.html', form=form)
-        except InvalidRequestError:
-            flash("Email taken", 'danger')
-            return render_template('users/edit.html', form=form)
-        #  why does this not work?
-
-        return redirect(f"/users/{user.id}")
-
+            db.session.commit()
+            return redirect(f"/users/{user.id}")
+        flash("Wrong Password, please try again.", "danger")
     else:
         return render_template('users/edit.html', form=form, user=user)
 

@@ -13,8 +13,9 @@
     <button class="btn btn-outline-grey my-2 my-lg-0" type="submit">Search</button>
   </form>
 
-  <img src="{{image}}"  class="img-thumbnail" alt="">
-
+  {%for img in img_list%}
+    <img src="{{img}}"  class="img-thumbnail" class="card-image">
+  {%endfor%}
   </div>
 </div>
   {% endblock %}
