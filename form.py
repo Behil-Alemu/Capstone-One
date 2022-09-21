@@ -10,14 +10,14 @@ class UserAddForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('E-mail', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[Length(min=6)])
-    Avatar = SelectField('Avatar', choices=[('cpp', 'C++'), ('py', 'Python'), ('text', 'Plain Text')])
+    avatar = SelectField('Avatar', choices=[('cpp', 'C++'), ('py', 'Python'), ('text', 'Plain Text')])
 
 class UserEditForm(FlaskForm):
     """Form for editing profile"""
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('E-mail', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[Length(min=6)])
-    Avatar = SelectField('Avatar', choices=[('cpp', 'C++'), ('py', 'Python'), ('text', 'Plain Text')])
+    avatar = SelectField('Avatar', choices=[('cpp', 'C++'), ('py', 'Python'), ('text', 'Plain Text')])
     social_media = StringField('(Optional) Social Media @')
     bio=StringField('(Optional) Bio')
 
@@ -33,7 +33,7 @@ class LoginForm(FlaskForm):
 class PostForm(FlaskForm):
     """Post form."""
 
-    title = StringField('Username', validators=[DataRequired()])
-    description = StringField('Title', validators=[DataRequired()])
-    imageURL = StringField('Post Your Art:', validators=[DataRequired()])
+    title = StringField('Title:', validators=[DataRequired()])
+    description = StringField('Description:', validators=[DataRequired()])
+    imageURL = StringField('Your Art URL:', validators=[DataRequired()])
     

@@ -1,11 +1,14 @@
 from email.mime import image
+from tkinter import Image
+from urllib import response
 from flask import Flask, request, render_template,  redirect, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db,  connect_db, User, Post,Likes,Inspiration
 from sqlalchemy.exc import IntegrityError,InvalidRequestError
-from forms import UserAddForm, LoginForm, MessageForm, UserEditForm, PostForm
+from form import UserAddForm, LoginForm, UserEditForm, PostForm
 import json
 import requests
+from random import sample
 
 CURR_USER_KEY = "curr_user"
 
@@ -21,51 +24,43 @@ debug = DebugToolbarExtension(app)
 
 
 connect_db(app)
-db.create_all()
+# db.create_all()
 
 API_BASE_URL = "https://collectionapi.metmuseum.org/public/collection/v1 "
 
-# def search_art(searched):
-#     res = requests.get(f"{API_BASE_URL}/search?hasImages=true&q=Paintings&p={searched}")
-#     data = res.json()
-#     image= data["objectIDs"][0]["primaryImage"]
-#     return image
 
-# @app.route('/')
-# def show_search_form():
-#     return render_template("base.html")
-
-
-# @app.route('/show_searched_art')
-# def get_art():
-#     searched = request.args["image"]
-#     image_url = search_art(searched)
-#     # import pdb; pdb.set_trace()
-#     return render_template('base.html', image_url=image_url)
 
 # for i in range(len.lenghtofAPI)
-# api url with object id randrange(length)
+# api url with object id randrange(length) random.sample
+# val = random.choices(array of list, k=10) print(val)
+
+##############################################################################
+# search
+search_base_api = "https://collectionapi.metmuseum.org/public/collection/v1/search"
+objectIDs_api="https://collectionapi.metmuseum.org/public/collection/v1/objects/"
+
+@app.route('/')
+def homepage():
+    """Show homepage:"""
+    search = str(request.args.get('image'))
+    res = requests.get(f"{search_base_api}",params={"q":search, "hasImages": "true"})
+    data = res.json()
+   
+    ten_random = sample(list(data['objectIDs']), 10)
+    print(ten_random)
+
+    
+    data_url= data["objectIDs"][0]
+  
+    object_res = requests.get(f"{objectIDs_api}{data_url}")
+    object_data=object_res.json()
+    image_url= object_data["primaryImage"]
 
 
-response = requests.get("https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=Paintings&p=African")
-data = response.json()
-url = data["objectIDs"][0]
+    return render_template('home/home.html', image=image_url)
 
 
 
-# res_id = requests.get("https://collectionapi.metmuseum.org/public/collection/v1/objects/{url}")
-
-# data_url = res_id.json()
-# image_URL= data_url["primaryImage"]
-
-def search_art(searched):
-    res = requests.get(f"{API_BASE_URL}/search?hasImages=true&q=Paintings&p={searched}")
-    # data_url = res.json()
-    primaryImage= res["primaryImage"]
-    image = {'primaryImage': primaryImage}
-    return image
-
-search_art(url)
 
 
 ##############################################################################
@@ -97,13 +92,9 @@ def do_logout():
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
     """Handle user signup.
-
     Create new user and add to DB. Redirect to home page.
-
     If form not valid, present form.
-
-    If the there already is a user with that username: flash message
-    and re-present form.
+    If the there already is a user with that username: flash message and re-present form.
     """
 
     form = UserAddForm()
@@ -114,14 +105,13 @@ def signup():
                 username=form.username.data,
                 password=form.password.data,
                 email=form.email.data,
-                Avatar=form.image_url.data or User.image_url.default.arg)
+                avatar=form.avatar.data or User.avatar.default.arg)
             db.session.commit()
         except IntegrityError:
             flash("Username already taken", 'danger')
             return render_template('users/signup.html', form=form)
 
         do_login(user)
-
         return redirect("/")
 
     else:
@@ -158,19 +148,95 @@ def logout():
 
 ##############################################################################
 # list users post:
-@app.route('/users-post/<int:user_id>')
+
+@app.route('/post/new', methods=["GET", "POST"])
+def messages_add():
+    """Add a post:
+
+    Show form if GET. If valid, update message and redirect to user page.
+    """
+
+    if not g.user:
+        flash("Please sign up first : }", "info")
+        return redirect("/")
+
+    form = PostForm()
+
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, 
+                    description=form.description.data,
+                    imageURL=form.imageURL.data)
+        g.user.posts.append(post)
+        db.session.commit()
+        return redirect("/posts")
+    return render_template('posts/addpost.html', form=form)
+
+@app.route('/posts/user', methods=["GET"])
+def show_posts():
+    """Show a message."""
+    if g.user:
+        post = (Post.query.order_by(Post.created_at.desc()).limit(15).all())
+        likes= [post.id for post in g.user.likes]
+        return render_template('posts/show.html', post=post, likes=likes)
+    else:
+        return render_template('home/home-anon.html')
+
+##############################################################################
+#  users pofile:
+@app.route('/users/<int:user_id>')
 def users_show(user_id):
     """Show user profile."""
 
     user = User.query.get_or_404(user_id)
-    # snagging messages in order from the database;
-    # user.messages won't be in order by default
-    post = (Post
-                .query
-                .filter(Post.user_id == user_id)
-                .order_by(Post.timestamp.desc())
-                .limit(10)
-                .all())
-    likes= [msg.id for msg in user.likes]
 
-    return render_template('users/show.html', user=user, post=post, likes=likes)
+    return render_template('users/show.html', user=user)
+
+@app.route('/users/profile', methods=["GET", "POST"])
+def profile():
+    """Update profile for current user."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect(f"/users/{g.user.id}")
+
+    user=g.user
+    form = UserEditForm()
+
+    if form.validate_on_submit():
+        try:
+            if User.authenticate(user.username,form.password.data):
+                user.email=form.email.data
+                user.image_url=form.image_url.data or User.image_url.default.arg
+                user.bio=form.bio.data
+                user.location=form.location.data
+                user.header_image_url=form.header_image_url.data
+
+                db.session.commit()
+        except IntegrityError:
+            flash("Wrong password", 'danger')
+            return render_template('users/edit.html', form=form)
+        except InvalidRequestError:
+            flash("Email taken", 'danger')
+            return render_template('users/edit.html', form=form)
+        #  why does this not work?
+
+        return redirect(f"/users/{user.id}")
+
+    else:
+        return render_template('users/edit.html', form=form, user=user)
+
+
+@app.route('/users/delete', methods=["POST"])
+def delete_user():
+    """Delete user."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    do_logout()
+
+    db.session.delete(g.user)
+    db.session.commit()
+
+    return redirect("/signup")

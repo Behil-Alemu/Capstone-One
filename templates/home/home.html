@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Home - THE MET API{% endblock%}
+{% block body_class %}Home{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-md-center">
+  <div class="col-md-7 col-lg-5">
+    
+
+<form class="form-inline" action="/">
+    <input class="form-control mr-lg-7" type="search" placeholder="Search" aria-label="Search" name="image" >
+    <button class="btn btn-outline-grey my-2 my-lg-0" type="submit">Search</button>
+  </form>
+
+  <img src="{{image}}"  class="img-thumbnail" alt="">
+
+  </div>
+</div>
+  {% endblock %}
