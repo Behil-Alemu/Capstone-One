@@ -1,26 +1,26 @@
 
-// $(function() {
-// let BASE_URL ="https://collectionapi.metmuseum.org/public/collection/v1";
+$(function() {
+let searched_URL ="http://127.0.0.1:5000/";
+let objectIDs_api="https://collectionapi.metmuseum.org/public/collection/v1/objects/"
+async function ten_art_piece(){
+    const res = await axios.get(`${searched_URL}/ten_random`)
+    const ids=res.data
+    console.log(ids)
 
-// let five_art_pieces=[]
-// async function five_art_piece(){
-//     let alldata = await $.getJSON(`${BASE_URL}/search?hasImages=true&q=Paintings`);
-//     for (let i = 0; i < 20; i++) {
-//         let randomIdx = Math.floor(Math.random()*alldata.objectIDs.length)
-//         let randomImg = await $.getJSON(`${BASE_URL}/objects/${alldata.objectIDs[randomIdx]}`);
 
-//     five_art_pieces.push(randomImg)
-//     let imageSpliced = five_art_pieces.splice(0,1)
-//     console.log(imageSpliced)
+   
 
-//     imageSpliced.map(art => {
-//         $("div").append(`<img  class="img-fluid " src="${art.primaryImageSmall}"></img>`)
-//     })
-//     } 
-
-// }
-// five_art_piece()
-// });
+    const responses = await Promise.all()(
+        ids.map(async id => {
+            const res = await fetch(
+                `${objectIDs_api}${id}`
+            ); // Send request for each id
+        })
+    );
+  
+}
+ten_art_piece()
+});
 
 
 

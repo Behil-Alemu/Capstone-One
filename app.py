@@ -10,6 +10,7 @@ import json
 import requests
 from random import sample
 
+
 CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
@@ -44,30 +45,47 @@ def homepage():
     """Show homepage:"""
     search = str(request.args.get('image'))
     res = requests.get(f"{search_base_api}",params={"q":search, "hasImages": "true"})
-    data = res.json()
    
-    ten_random = sample(list(data['objectIDs']), 10)
+    ten_random = sample(list(res.json()['objectIDs']), 10)
     img_list=[]
-    
+
     for rand in range(len(ten_random)):
         object_res = requests.get(f"{objectIDs_api}{ten_random[rand]}")
-        object_data=object_res.json()
-        print(object_data)
-        image= object_data.get("primaryImage")
+        print(object_res.json())
+        image= object_res.json().get("primaryImage")
         if image:
             img_list.append(image)
         
     return render_template('home/home.html', img_list=img_list)
-    # data_url= data["objectIDs"][0]
 
+#     # data_url= data["objectIDs"][0]
+# if I do not seach anythin why show it still show an image
 
+@app.route('/ten_random')
+def return_ten_random():
+    """Show homepage:"""
+    search = str(request.args.get('image'))
+    res = requests.get(f"{search_base_api}",params={"q":search, "hasImages": "true"})
+   
+    ten_random = sample(list(res.json()['objectIDs']), 10)
+
+    return ten_random
+
+# @app.route('/')
+# def homepage():
+#     """Show homepage:"""
+
+#     img_list="img_list"
+#     return render_template('home/home.html', img_list=img_list)
    
 
+# ############################################################################# trying CSV files with pandas jupyter notebook new= python the shift enter brew install git-lfs git lfs install
+# import pandas as pd
+# df = pd.read_csv('openaccess/MetObjects.csv')
 
 
 
-
-##############################################################################
+#############################################################################
 # User signup/login/logout
 
 @app.before_request
@@ -153,6 +171,7 @@ def logout():
 ##############################################################################
 # list users post:
 
+
 @app.route('/post/new', methods=["GET", "POST"])
 def messages_add():
     """Add a post:
@@ -172,8 +191,22 @@ def messages_add():
                     imageURL=form.imageURL.data)
         g.user.posts.append(post)
         db.session.commit()
-        return redirect("/posts")
+        return redirect(f"/users/{g.user.id}")
     return render_template('posts/addpost.html', form=form)
+
+@app.route('/posts/<int:post_id>/delete', methods=["POST"])
+def messages_destroy(post_id):
+    """Delete a message."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    post = Post.query.get(post_id)
+    db.session.delete(post)
+    db.session.commit()
+
+    return redirect(f"/users/{g.user.id}")
 
 
 

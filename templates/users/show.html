@@ -35,11 +35,33 @@
     </aside>
     </div>
     <div class="row justify-content-md-center">
-        <div class="col-md-7 col-lg-5">
-            {%for p in post%}
-          <img src="{{p.imageURL}}"  class="img-thumbnail" alt="">  
-          {%endfor%}
+  
+
+      {%for p in post%}
+        <div class="message-area">
+          <div class="message-heading">
+            <!-- <a href="/users/{{p.user_id }}">@{{p.user.username }}</a> -->
+            <div class="col-md-7 col-lg-5">
+             
+              <img src="{{p.imageURL}}"  class="img-thumbnail" alt="">  
+            </div>
+            {% if g.user %}
+                <form method="POST"
+                      action="/posts/{{ post.id }}/Edit">
+                  <button class="btn btn-outline-info">Edit</button>
+                </form>
+                <form method="POST"
+                      action="/posts/{{ post.id }}/delete">
+                  <button class="btn btn-outline-danger">Delete</button>
+                </form>
+            {% endif %}
+          </div>
+          <p class="single-message">{{ post.title }}</p>
+          <p class="single-message">{{ post.description }}</p>
+          <span class="text-muted">{{ p.created_at.strftime('%d %B %Y') }}</span>
         </div>
+        {%endfor%}
+
       </div>
  
 {% endblock %}
