@@ -36,4 +36,11 @@ class PostForm(FlaskForm):
     title = StringField('Title:', validators=[DataRequired()])
     description = StringField('Description:', validators=[DataRequired()])
     imageURL = StringField('Your Art URL:', validators=[DataRequired()])
+
+class EditPostForm(FlaskForm):
+    """Post form."""
+
+    title = StringField('Title:', validators=[DataRequired()])
+    description = StringField('Description:', validators=[DataRequired()])
+    imageURL = StringField('Your Art URL:', validators=[DataRequired()])
     

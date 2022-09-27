@@ -5,7 +5,7 @@ from flask import Flask, request, render_template,  redirect, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db,  connect_db, User, Post,Likes,Inspiration
 from sqlalchemy.exc import IntegrityError,InvalidRequestError
-from form import UserAddForm, LoginForm, UserEditForm, PostForm
+from form import UserAddForm, LoginForm, UserEditForm, PostForm,EditPostForm
 import json
 import requests
 from random import sample
@@ -44,17 +44,18 @@ objectIDs_api="https://collectionapi.metmuseum.org/public/collection/v1/objects/
 def homepage():
     """Show homepage:"""
     search = str(request.args.get('image'))
-    res = requests.get(f"{search_base_api}",params={"q":search, "hasImages": "true"})
-   
-    ten_random = sample(list(res.json()['objectIDs']), 10)
     img_list=[]
 
-    for rand in range(len(ten_random)):
-        object_res = requests.get(f"{objectIDs_api}{ten_random[rand]}")
-        print(object_res.json())
-        image= object_res.json().get("primaryImage")
-        if image:
-            img_list.append(image)
+    if search is not None:
+        res = requests.get(f"{search_base_api}",params={"q":search, "hasImages": "true"})
+   
+        ten_random = sample(list(res.json()['objectIDs']), 1)
+
+        for rand in range(len(ten_random)):
+            object_res = requests.get(f"{objectIDs_api}{ten_random[rand]}")
+            image= object_res.json().get("primaryImage")
+            if image:
+                img_list.append(image)
         
     return render_template('home/home.html', img_list=img_list)
 
@@ -169,11 +170,11 @@ def logout():
     return redirect('/login')
 
 ##############################################################################
-# list users post:
+# list user's post:
 
 
 @app.route('/post/new', methods=["GET", "POST"])
-def messages_add():
+def post_add():
     """Add a post:
 
     Show form if GET. If valid, update message and redirect to user page.
@@ -194,7 +195,29 @@ def messages_add():
         return redirect(f"/users/{g.user.id}")
     return render_template('posts/addpost.html', form=form)
 
-@app.route('/posts/<int:post_id>/delete', methods=["POST"])
+@app.route('/post/<int:post_id>/edit', methods=["GET", "POST"])
+def edit_post(post_id):
+    """Add a post:
+
+    Show form if GET. If valid, update message and redirect to user page.
+    """
+    posts = Post.query.get_or_404(post_id)
+    if not g.user:
+        flash("Please sign up first : }", "info")
+        return redirect("/")
+
+    form = EditPostForm(obj=posts)
+
+    if form.validate_on_submit():
+        posts.title=form.title.data, 
+        posts.description=form.description.data,
+        posts.imageURL=form.imageURL.data
+        db.session.commit()
+        return redirect(f"/users/{g.user.id}")
+
+    return render_template('posts/edit.html', form=form, posts=posts)
+
+@app.route('/post/<int:post_id>/delete', methods=["POST"])
 def messages_destroy(post_id):
     """Delete a message."""
 
@@ -271,3 +294,6 @@ def delete_user():
     db.session.commit()
 
     return redirect("/signup")
+
+##############################################################################
+# list shared posts:

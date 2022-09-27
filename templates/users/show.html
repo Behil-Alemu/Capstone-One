@@ -12,13 +12,16 @@
                  class="card-image">
             <p>{{ g.user.username }}</p>
           </a>
+          <a href="/users/profile">
+          <i class='fa fa-edit' style='font-size:24px;color:red'></i></a>
           <ul class="user-stats nav nav-pills">
             <li class="stat">
               <p class="small">Posts</p>
-              <h4>
-                <a href="/users/{{ g.user.id }}">{{ g.user.post | length }}</a>
-              </h4>
+              <h3>
+                <a href="/users/{{ g.user.id }}">{{ g.user.posts | length }}</a>
+              </h3>
             </li>
+           
 
             <li >
               <p class="small"><ins>Bio:</ins></p>
@@ -46,18 +49,16 @@
               <img src="{{p.imageURL}}"  class="img-thumbnail" alt="">  
             </div>
             {% if g.user %}
-                <form method="POST"
-                      action="/posts/{{ post.id }}/Edit">
-                  <button class="btn btn-outline-info">Edit</button>
-                </form>
-                <form method="POST"
-                      action="/posts/{{ post.id }}/delete">
-                  <button class="btn btn-outline-danger">Delete</button>
-                </form>
+            <form>
+              <button class="btn 
+              btn-sm btn-primary w-90" formaction="/post/{{p.id}}/edit" formmethod="get">Edit</button>
+              <button class="btn 
+              btn-sm btn-outline-danger w-90" formaction="/post/{{p.id}}/delete" formmethod="post">Delete</button>
+          </form>
             {% endif %}
           </div>
-          <p class="single-message">{{ post.title }}</p>
-          <p class="single-message">{{ post.description }}</p>
+          <p class="single-message">Title: {{ p.title }}</p>
+          <p class="single-message">Description: {{ p.description }}</p>
           <span class="text-muted">{{ p.created_at.strftime('%d %B %Y') }}</span>
         </div>
         {%endfor%}

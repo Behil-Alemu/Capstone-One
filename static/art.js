@@ -1,26 +1,26 @@
 
-$(function() {
-let searched_URL ="http://127.0.0.1:5000/";
-let objectIDs_api="https://collectionapi.metmuseum.org/public/collection/v1/objects/"
-async function ten_art_piece(){
-    const res = await axios.get(`${searched_URL}/ten_random`)
-    const ids=res.data
-    console.log(ids)
+// $(function() {
+// let searched_URL ="http://127.0.0.1:5000/";
+// let objectIDs_api="https://collectionapi.metmuseum.org/public/collection/v1/objects/"
+// async function ten_art_piece(){
+//     const res = await axios.get(`${searched_URL}/ten_random`)
+//     const ids=res.data
+//     console.log(ids)
 
 
    
 
-    const responses = await Promise.all()(
-        ids.map(async id => {
-            const res = await fetch(
-                `${objectIDs_api}${id}`
-            ); // Send request for each id
-        })
-    );
+//     const responses = await Promise.all()(
+//         ids.map(async id => {
+//             const res = await fetch(
+//                 `${objectIDs_api}${id}`
+//             ); // Send request for each id
+//         })
+//     );
   
-}
-ten_art_piece()
-});
+// }
+// ten_art_piece()
+// });
 
 
 
