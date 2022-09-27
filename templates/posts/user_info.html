@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}About User{% endblock%}
+{% block content %}
+
+      <div>
+        <h3>{{user.username }}'s Art</h3>
+        <ul >
+          <li class="stat">
+            <h4>
+              {{ g.user.posts | length }} posts
+            </h4>
+          </li>
+
+          <li >
+            <p >Bio-{{user.bio }}</p>
+          </li>
+          <li >
+            <p>@{{user.social_media }}</p>
+          </li>
+        </ul>
+        
+    </div>
+
+{%for post in user.posts%}
+<div class="message-area">
+  <div class="message-heading">
+    
+    <div class="col-md-7 col-lg-5">
+     
+      <img src="{{post.imageURL}}"  class="img-thumbnail" alt="">  
+      <form method="POST" action="/posts/{{ post.id }}/like" class="messages-like">
+        <button class="
+          btn 
+          btn-sm 
+          {{'btn-primary' if post.id in likes else 'btn-secondary'}}"
+        >
+          <i class="fa fa-thumbs-up"></i> 
+        </button>
+      </form>
+    </div>
+    {% if g.user.id == user.id  %}
+    <form>
+      <button class="btn 
+      btn-sm btn-primary w-90" formaction="/post/{{post.id}}/edit" formmethod="get">Edit</button>
+      <button class="btn 
+      btn-sm btn-outline-danger w-90" formaction="/post/{{post.id}}/delete" formmethod="post">Delete</button>
+  </form>
+    {% endif %}
+  </div>
+  <p class="single-message">Title: {{ post.title }}</p>
+  <p class="single-message">Description: {{ post.description }}</p>
+  <span class="text-muted">{{ post.created_at.strftime('%d %B %Y') }}</span>
+</div>
+{%endfor%}
+{% endblock %}

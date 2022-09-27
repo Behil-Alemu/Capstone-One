@@ -27,37 +27,30 @@ debug = DebugToolbarExtension(app)
 connect_db(app)
 # db.create_all()
 
-API_BASE_URL = "https://collectionapi.metmuseum.org/public/collection/v1 "
 
-
-
-# for i in range(len.lenghtofAPI)
-# api url with object id randrange(length) random.sample
-# val = random.choices(array of list, k=10) print(val)
 
 ##############################################################################
 # search
 search_base_api = "https://collectionapi.metmuseum.org/public/collection/v1/search"
-objectIDs_api="https://collectionapi.metmuseum.org/public/collection/v1/objects/"
 
-@app.route('/')
-def homepage():
-    """Show homepage:"""
-    search = str(request.args.get('image'))
-    img_list=[]
+# @app.route('/')
+# def homepage():
+#     """Show homepage:"""
+#     search = str(request.args.get('image'))
+#     img_list=[]
 
-    if search is not None:
-        res = requests.get(f"{search_base_api}",params={"q":search, "hasImages": "true"})
+#     if search is not None:
+#         res = requests.get(f"{search_base_api}",params={"q":search, "hasImages": "true"})
    
-        ten_random = sample(list(res.json()['objectIDs']), 1)
+#         ten_random = sample(list(res.json()['objectIDs']), 1)
 
-        for rand in range(len(ten_random)):
-            object_res = requests.get(f"{objectIDs_api}{ten_random[rand]}")
-            image= object_res.json().get("primaryImage")
-            if image:
-                img_list.append(image)
+#         for rand in range(len(ten_random)):
+#             object_res = requests.get(f"{objectIDs_api}{ten_random[rand]}")
+#             image= object_res.json().get("primaryImage")
+#             if image:
+#                 img_list.append(image)
         
-    return render_template('home/home.html', img_list=img_list)
+#     return render_template('home/home.html', img_list=img_list)
 
 #     # data_url= data["objectIDs"][0]
 # if I do not seach anythin why show it still show an image
@@ -68,21 +61,21 @@ def return_ten_random():
     search = str(request.args.get('image'))
     res = requests.get(f"{search_base_api}",params={"q":search, "hasImages": "true"})
    
-    ten_random = sample(list(res.json()['objectIDs']), 10)
+    ten_random = sample(res.json()['objectIDs'], 10)
 
     return ten_random
 
-# @app.route('/')
-# def homepage():
-#     """Show homepage:"""
 
-#     img_list="img_list"
-#     return render_template('home/home.html', img_list=img_list)
+@app.route('/')
+def homepage():
+    """Show homepage:"""
+    search = str(request.args.get('image'))
+    res = requests.get(f"{search_base_api}",params={"q":search, "hasImages": "true"})
    
-
-# ############################################################################# trying CSV files with pandas jupyter notebook new= python the shift enter brew install git-lfs git lfs install
-# import pandas as pd
-# df = pd.read_csv('openaccess/MetObjects.csv')
+    ten_random = sample(list(res.json()['objectIDs']), 10)
+        
+    return render_template('home/home.html', img_ids = ten_random)
+   
 
 
 
@@ -280,8 +273,8 @@ def edit_profile():
         return render_template('users/edit.html', form=form, user=user)
 
 
-@app.route('/users/delete', methods=["POST"])
-def delete_user():
+@app.route('/users/<int:user_id>/delete', methods=["POST"])
+def delete_user(user_id):
     """Delete user."""
 
     if not g.user:
@@ -289,11 +282,40 @@ def delete_user():
         return redirect("/")
 
     do_logout()
-
-    db.session.delete(g.user)
+    user=User.query.get_or_404(user_id)
+    db.session.delete(user)
     db.session.commit()
 
     return redirect("/signup")
 
 ##############################################################################
 # list shared posts:
+@app.route("/posts")
+def users_post():
+    """how list of users post"""
+    posts = (Post.query
+                .order_by(Post.created_at.desc())
+                .limit(15)
+                .all())
+        
+    likes=[post.id for post in g.user.likes]
+    return render_template('posts/show.html', posts=posts, likes=likes)
+
+@app.route("/user/<int:user_id>/profile")
+def post_user_info(user_id):
+    """show post and info about user"""
+    user=User.query.get_or_404(user_id)
+        
+    return render_template('posts/user_info.html', user=user)
+
+@app.route("/posts/<int:post_id>/like")
+def like_a_post(post_id):
+    """toggle like"""
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+        
+    liked_post= Post.query.get_or_404(post_id)
+    g.user.likes.append(liked_post)
+    db.session.commit()
+    return redirect("/posts")

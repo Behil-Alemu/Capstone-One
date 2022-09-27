@@ -101,6 +101,7 @@ class Likes(db.Model):
     """Mapping of a Post to a Tag."""
 
     __tablename__ = "like"
+    id = db.Column(db.Integer,primary_key=True,autoincrement=True)
 
     post_id = db.Column(db.Integer,db.ForeignKey("post.id", ondelete='cascade'),primary_key=True)
 

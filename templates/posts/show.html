@@ -1,15 +1,37 @@
 {% extends 'base.html' %}
 
-{% block title %}THE MET API-My art{% endblock%}
+{% block title %}Art by Users{% endblock%}
 
 {% block content %}
 
-<div class="row justify-content-md-center">
-  <div class="col-md-7 col-lg-5">
-      {%for p in post%}
-    <img src="{{p.imageURL}}"  class="img-thumbnail" alt="">  
-    {%endfor%}
-  </div>
+<div class="col-lg-6 col-md-8 col-sm-12">
+  <ul class="list-group" id="messages">
+    {% for post in posts %}
+      <li class="list-group-item">
+        <a href="/posts/{{ post.id  }}" class="message-link"/>
+        <a href="/users/{{ post.user.id }}">
+          <img src="{{ post.user.avatar }}" alt="" class="timeline-image">
+        </a>
+        <div class="message-area">
+          <a href="/user/{{post.user.id}}/profile">@{{ post.user.username }}</a>
+          <span class="text-muted">{{ post.created_at.strftime('%d %B %Y') }}</span>
+          <p> <b>Title: </b> {{ post.title }}</p>
+          <p> <b>Description: </b>{{ post.description }}</p>
+          <img src="{{post.imageURL}}">
+        </div>
+        <form method="POST" action="/posts/{{ post.id }}/like" class="messages-like">
+          <button class="
+            btn 
+            btn-sm 
+            {{'btn-primary' if post.id in likes else 'btn-secondary'}}"
+          >
+            <i class="fa fa-thumbs-up"></i> 
+          </button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
 </div>
+
 
 {% endblock %}
