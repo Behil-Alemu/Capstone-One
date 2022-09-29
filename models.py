@@ -31,7 +31,7 @@ class User(db.Model):
     inspiration=db.relationship('Inspiration'
     )
     likes =db.relationship('Post',
-        secondary="like"
+        secondary="likes"
     )
 
     def __repr__(self):
@@ -89,7 +89,7 @@ class Post(db.Model):
 
     created_at=db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='cascade'), nullable=False)
     user = db.relationship('User')
 
     @property
@@ -100,15 +100,16 @@ class Post(db.Model):
 class Likes(db.Model):
     """Mapping of a Post to a Tag."""
 
-    __tablename__ = "like"
+    __tablename__ = "likes"
+    
     id = db.Column(db.Integer,primary_key=True,autoincrement=True)
 
-    post_id = db.Column(db.Integer,db.ForeignKey("post.id", ondelete='cascade'),primary_key=True)
+    post_id = db.Column(db.Integer,db.ForeignKey("post.id", ondelete='cascade'))
 
-    user_id = db.Column(db.Integer,db.ForeignKey("users.id", ondelete='cascade'),primary_key=True)
-    
-    posts = db.relationship('Post',backref='like')
-    user = db.relationship('User',backref='like')
+    user_id = db.Column(db.Integer,db.ForeignKey("users.id", ondelete='cascade'))
+
+    # posts = db.relationship('Post')
+    # user = db.relationship('User')
 
 
 class Inspiration(db.Model):
