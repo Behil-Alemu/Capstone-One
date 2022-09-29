@@ -38,6 +38,10 @@
       <li class="nav-item">
         <a class="nav-link disabled" href="/users/{{ g.user.id }}">{{g.user.username}}</a>
       </li>
+      <li class="nav-item">
+        <a href="/users/{{ g.user.id }}/likes">
+          <i class='fa fa-thumbs-o-up' style='font-size:24px;color:blue'></i></a>
+      </li>
       {% endif %}
     </ul>
   </div>

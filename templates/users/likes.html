@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Art liked by  {{g.user.username}}{% endblock%}
+{% block content %}
+{% if g.user.likes == Null %}
+<div class="message-heading">
+  <h3>No likes Added</h3>
+</div>
+{% else %}
+{%for liked_post in likes%}
+<div class="message-heading">
+    <a href="/user/{{liked_post.user.id}}/profile">@{{ liked_post.user.username }}</a>
+          <span class="text-muted">{{ liked_post.created_at.strftime('%d %B %Y') }}</span>
+          <p> <b>Title: </b> {{ liked_post.title }}</p>
+          <p> <b>Description: </b>{{ liked_post.description }}</p>
+  
+  <div class="col-md-7 col-lg-5">
+    <img src="{{liked_post.imageURL}}"  class="img-thumbnail" alt=""> 
+     
+  </div>
+{%endfor%}
+{% endif %}
+</div>
+{% endblock %}

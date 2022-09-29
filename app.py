@@ -1,5 +1,6 @@
 from crypt import methods
 from email.mime import image
+from re import L
 from tkinter import Image
 from urllib import response
 from flask import Flask, request, render_template,  redirect, flash, session, g
@@ -230,8 +231,8 @@ def show_user_info(user_id):
                     .limit(15)
                     .all())
         
-        # likes=[post.id for post in g.user.likes]
-        return render_template('users/show.html', post=post, user=user)
+        likes=[post.id for post in g.user.likes]
+        return render_template('users/show.html', post=post, user=user, likes=likes)
 
     else:
         return render_template('home/home-anon.html')
@@ -277,6 +278,21 @@ def delete_user(user_id):
 
     return redirect("/signup")
 
+@app.route('/users/<int:user_id>/likes', methods=["GET"])
+def show_user_likes(user_id):
+    """Show user likes"""
+
+    if g.user:
+        post = (Post
+                    .query
+                    .filter(Post.user_id==user_id)
+                    .order_by(Post.created_at.desc())
+                    .limit(15)
+                    .all())
+        
+        likes=[post for post in g.user.likes]
+        return render_template('users/likes.html', post=post, likes=likes)
+
 ##############################################################################
 # list shared posts:
 @app.route("/posts")
@@ -287,8 +303,14 @@ def users_post():
                 .limit(15)
                 .all())
         
-    likes=[post.id for post in g.user.likes]
-    return render_template('posts/show.html', posts=posts, likes=likes)
+    liked_post_id=[post.id for post in g.user.likes]
+    # likes_on_post= (Likes
+    #                 .query
+    #                 .filter(Post.user_id==user_id)
+    #                 .order_by(Post.created_at.desc())
+    #                 .limit(15)
+    #                 .all())
+    return render_template('posts/show.html', posts=posts, likes=liked_post_id)
 
 @app.route("/user/<int:user_id>/profile")
 def post_user_info(user_id):
@@ -297,7 +319,7 @@ def post_user_info(user_id):
         
     return render_template('posts/user_info.html', user=user)
 
-@app.route("/posts/<int:post_id>/like")
+@app.route("/posts/<int:post_id>/like",methods=["POST"] )
 def like_a_post(post_id):
     """toggle like"""
     if not g.user:
@@ -305,6 +327,12 @@ def like_a_post(post_id):
         return redirect("/")
         
     liked_post= Post.query.get_or_404(post_id)
-    g.user.likes.append(liked_post)
+    user_likes= g.user.likes
+
+    if liked_post in user_likes:
+        g.user.likes= [ like for like in user_likes if like!=liked_post]
+    else:
+        g.user.likes.append(liked_post)
+
     db.session.commit()
     return redirect("/posts")

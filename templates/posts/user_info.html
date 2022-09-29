@@ -7,7 +7,7 @@
         <ul >
           <li class="stat">
             <h4>
-              {{ g.user.posts | length }} posts
+              {{ user.posts | length }} posts
             </h4>
           </li>
 
@@ -38,6 +38,11 @@
         </button>
       </form>
     </div>
+    <div>
+      <h4>
+      {{ user.likes | length }} likes
+      </h4>
+  </div>
     {% if g.user.id == user.id  %}
     <form>
       <button class="btn 

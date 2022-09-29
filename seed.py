@@ -24,7 +24,7 @@ db.session.add_all([u1, u2, u3])
 db.session.commit()
 u1_post = Post(title='Sun rise', description="A painting of a sun rise in LA",  imageURL="https://tinyurl.com/demo-cupcake", created_at='09-10-2022', user_id=u1.id)
 
-u3_post = Post(title='Liz', description="Drawing of my dear friend", imageURL="https://tinyurl.com/demo-cupcake", created_at='09-19-2022', user_id=u3.id)
+u3_post = Post(title='Liz', description="Drawing of my dear friend", imageURL="https://images.unsplash.com/photo-1569091791842-7cfb64e04797?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8ZHJhd2luZ3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60", created_at='09-19-2022', user_id=u3.id)
 
 db.session.add_all([ u1_post, u3_post])
 db.session.commit()
