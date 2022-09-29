@@ -106,6 +106,7 @@ class Likes(db.Model):
     post_id = db.Column(db.Integer,db.ForeignKey("post.id", ondelete='cascade'),primary_key=True)
 
     user_id = db.Column(db.Integer,db.ForeignKey("users.id", ondelete='cascade'),primary_key=True)
+    
     posts = db.relationship('Post',backref='like')
     user = db.relationship('User',backref='like')
 

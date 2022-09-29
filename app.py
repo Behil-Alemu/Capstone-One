@@ -1,3 +1,4 @@
+from crypt import methods
 from email.mime import image
 from tkinter import Image
 from urllib import response
@@ -25,56 +26,44 @@ debug = DebugToolbarExtension(app)
 
 
 connect_db(app)
-# db.create_all()
+db.create_all()
+
+##############################################################################
+# search without js
+search_base_api = "https://collectionapi.metmuseum.org/public/collection/v1/search?"
+objectIDs_api="https://collectionapi.metmuseum.org/public/collection/v1/objects/"
+
+
+@app.route('/searched' )
+def search():
+    """Show homepage:"""
+    search = str(request.args.get('image'))
+
+    res = requests.get(f"{search_base_api}",params={"q":search, "hasImages": "true"})
+    ten_random = sample(list(res.json()['objectIDs']), 8)
+
+    return render_template('home/search.html',img_ids=ten_random)
 
 
 
 ##############################################################################
 # search
-search_base_api = "https://collectionapi.metmuseum.org/public/collection/v1/search"
 
-# @app.route('/')
-# def homepage():
-#     """Show homepage:"""
-#     search = str(request.args.get('image'))
-#     img_list=[]
-
-#     if search is not None:
-#         res = requests.get(f"{search_base_api}",params={"q":search, "hasImages": "true"})
-   
-#         ten_random = sample(list(res.json()['objectIDs']), 1)
-
-#         for rand in range(len(ten_random)):
-#             object_res = requests.get(f"{objectIDs_api}{ten_random[rand]}")
-#             image= object_res.json().get("primaryImage")
-#             if image:
-#                 img_list.append(image)
-        
-#     return render_template('home/home.html', img_list=img_list)
-
-#     # data_url= data["objectIDs"][0]
-# if I do not seach anythin why show it still show an image
-
-@app.route('/ten_random')
-def return_ten_random():
-    """Show homepage:"""
-    search = str(request.args.get('image'))
-    res = requests.get(f"{search_base_api}",params={"q":search, "hasImages": "true"})
-   
-    ten_random = sample(res.json()['objectIDs'], 10)
-
-    return ten_random
 
 
 @app.route('/')
 def homepage():
     """Show homepage:"""
-    search = str(request.args.get('image'))
-    res = requests.get(f"{search_base_api}",params={"q":search, "hasImages": "true"})
-   
-    ten_random = sample(list(res.json()['objectIDs']), 10)
-        
-    return render_template('home/home.html', img_ids = ten_random)
+    res = requests.get(f"{search_base_api}",params={"q":"painting", "hasImages": "true"})
+    five_random = sample(list(res.json()['objectIDs']), 5)
+    img_urls=[]
+    for rand in range(len(five_random)):
+        object_res = requests.get(f"{objectIDs_api}{five_random[rand]}")
+        object_data=object_res.json()
+        image= object_data.get("primaryImage")
+        if image:
+            img_urls.append(image)  
+    return render_template('home/home.html' , img_urls = img_urls)
    
 
 
