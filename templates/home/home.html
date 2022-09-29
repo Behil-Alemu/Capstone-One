@@ -11,10 +11,16 @@
     <button class="btn btn-outline-grey my-2 my-lg-0" type="submit">Search</button>
  </form>
 
+ {% set img_url = "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921" %}
 
 
-  {%for img in img_urls%}
+  {%for name,img in img_urls.items()%}
     <img src="{{img}}" class="img-thumbnail" class="card-image">
+    {%if name == ""%}
+    <p >Artist: <b>NA</b></p>
+    {%else%}
+    <p id="p">Artist: <b>{{name}}</b></p>
+    {%endif%}
   {%endfor%}
 
 </div>

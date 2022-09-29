@@ -5,12 +5,14 @@ from tkinter import Image
 from urllib import response
 from flask import Flask, request, render_template,  redirect, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
+from matplotlib import artist
 from models import db,  connect_db, User, Post,Likes,Inspiration
 from sqlalchemy.exc import IntegrityError,InvalidRequestError
 from form import UserAddForm, LoginForm, UserEditForm, PostForm,EditPostForm
 import json
 import requests
 from random import sample
+from sqlalchemy import func
 
 
 CURR_USER_KEY = "curr_user"
@@ -38,10 +40,9 @@ objectIDs_api="https://collectionapi.metmuseum.org/public/collection/v1/objects/
 @app.route('/searched' )
 def search():
     """Show homepage:"""
-    search = str(request.args.get('image'))
-
+    search = request.args.get('image')
     res = requests.get(f"{search_base_api}",params={"q":search, "hasImages": "true"})
-    ten_random = sample(list(res.json()['objectIDs']), 8)
+    ten_random = list(res.json()['objectIDs'])[:10]
 
     return render_template('home/search.html',img_ids=ten_random)
 
@@ -57,13 +58,14 @@ def homepage():
     """Show homepage:"""
     res = requests.get(f"{search_base_api}",params={"q":"painting", "hasImages": "true"})
     five_random = sample(list(res.json()['objectIDs']), 5)
-    img_urls=[]
+    img_urls={}
     for rand in range(len(five_random)):
         object_res = requests.get(f"{objectIDs_api}{five_random[rand]}")
         object_data=object_res.json()
         image= object_data.get("primaryImage")
+        artist= object_data.get("artistDisplayName")
         if image:
-            img_urls.append(image)  
+            img_urls[artist] = image         
     return render_template('home/home.html' , img_urls = img_urls)
    
 
@@ -304,13 +306,10 @@ def users_post():
                 .all())
         
     liked_post_id=[post.id for post in g.user.likes]
-    # likes_on_post= (Likes
-    #                 .query
-    #                 .filter(Post.user_id==user_id)
-    #                 .order_by(Post.created_at.desc())
-    #                 .limit(15)
-    #                 .all())
-    return render_template('posts/show.html', posts=posts, likes=liked_post_id)
+    likes_on_post= (Likes
+                    .query.filter(Likes.user_id==g.user.id).all()
+        )
+    return render_template('posts/show.html', posts=posts, likes=liked_post_id, likes_on_post=likes_on_post)
 
 @app.route("/user/<int:user_id>/profile")
 def post_user_info(user_id):

@@ -30,7 +30,9 @@
         </form>
         <div>
           <h4>
-          {{ likes | length }} likes
+            <!-- SELECT count(post_id) FROM likes WHERE user_id =3; -->
+            
+          {{ likes_on_post |length }} likes
           </h4>
       </div>
       </li>
