@@ -58,18 +58,28 @@ async function main() {
         axiosRequests.push(axios.get(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${imgIds[i]['id']}`));
     }
     const imgResponse = await axios.all(axiosRequests)
-    console.log(imgResponse)
+
         for (let i = 0; i < imgIds.length; i++) {
-            if (imgResponse[i].data["primaryImageSmall"]){
+            if (imgResponse[i].data["primaryImageSmall"])
+            {
             imgIds[i].src = imgResponse[i].data["primaryImageSmall"]
             } 
-            artist[i].innerHTML =imgResponse[i].data["artistDisplayName"] 
+            if (imgResponse[i].data["artistDisplayName"])
+            {
+            artist[i].innerHTML =imgResponse[i].data["artistDisplayName"]
+            } 
             title[i].innerHTML =imgResponse[i].data["title"] 
-            wikiA[i].href =imgResponse[i].data["artistWikidata_URL"] 
-            wikiT[i].href =imgResponse[i].data["objectWikidata_URL"] 
-        }
-        }
-
+            if (imgResponse[i].data["artistWikidata_URL"])
+            {
+            wikiA[i].href =imgResponse[i].data["artistWikidata_URL"]
+            } 
+            if (imgResponse[i].data["objectWikidata_URL"])
+            {
+            wikiT[i].href =imgResponse[i].data["objectWikidata_URL"]  
+            }
+          
+    }
+}
 
 main();
 
@@ -79,6 +89,3 @@ $(".show-more").on("submit", function(evt){
 })
 
 
-// seach with q= then display the first few searches(view more butten at the bottom)
-// user can put in date to search (dateBegin=1700&dateEnd=1800)
-// maybe later! add an interactive map to see art based on artist country
