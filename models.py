@@ -118,7 +118,7 @@ class Inspiration(db.Model):
 
     id = db.Column(db.Integer,primary_key=True,autoincrement=True)
 
-    inspiration = db.Column(db.Integer, nullable=False)
+    inspiration = db.Column(db.Integer, nullable=False, unique=True)
 
     user_id = db.Column(db.Integer,db.ForeignKey("users.id"), primary_key=True)
 

@@ -6,30 +6,64 @@
 
 <div class="row justify-content-md-center">
   <div class="col-md-7 col-lg-5">
-    <form action="/searched" >
+    <form action="/searched">
         <input class="form-control mr-lg-7" type="text" placeholder="Search"  name="image">
-        <button class="btn btn-outline-grey my-2 my-lg-0" type="submit">Search</button>
+          <button class="btn btn-outline-grey my-2 my-lg-0" type="submit">Search</button>
      </form>
 
+     <form action="/searched" method="post">
+      <label for="departmentID">Choose Department:</label>
+        <select name="departmentID" id="departmentID">
+          <option value="1">American Decorative Arts</option>
+          <option value="3">Ancient Near Eastern Art</option>
+          <option value="4">Arms and Armor</option>
+          <option value="5">Arts of Africa, Oceania, and the Americas</option>
+          <option value="6">Asian Art</option>
+          <option value="7">The Cloisters</option>
+          <option value="8">The Costume Institute</option>
+          <option value="9">Drawings and Prints</option>
+          <option value="10">Egyptian Art</option>
+          <option value="11">European Paintings</option>
+          <option value="12">European Sculpture and Decorative Arts</option>
+          <option value="13">Greek and Roman Art</option>
+          <option value="14">Islamic Art</option>
+          <option value="15">The Robert Lehman Collection</option>
+          <option value="16">The Libraries</option>
+          <option value="17">Medieval Art</option>
+          <option value="18">Musical Instruments</option>
+          <option value="19">Photographs</option>
+          <option value="21">Modern Art</option>
+        </select>
+        <input type="submit" value="Submit" />
+    </form>
 
 
   {% set img_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png" %}
 
   {% set google_url = "https://www.google.com/" %}
-  {% set NA = "NA" %}
+  {% set NA = "Not Listed" %}
 
-  {% for  img in img_ids%}
-    <img src="{{img_url}}" id="{{img}}" class="img-thumbnail" class="card-image">
-    
+  {% for  objectID in img_ids%}
+    <img src="{{img_url}}" id="{{objectID}}" class="img-thumbnail" class="card-image">
+
+    <!-- <form method="POST" action="/inspiration/{{objectID}}/add" class="messages-like">
+      <button class="
+        btn 
+        btn-sm 
+        {{'btn-primary' if objectID in inspirations else 'btn-secondary'}}"
+      >
+        <i class="fa fa-palette"></i> 
+      </button>
+    </form> -->
     <h4>Artist Name:</h4>
     <a href="{{google_url}}" class="artist-wiki">
-    <h4 class="artist-name" id="{{img}}">{{NA}}</h4></a>
+    <h4 class="artist-name" id="{{objectID}}">{{NA}}</h4></a>
 
     <h5>Art Title: </h5>
     <a href="{{google_url}}" class="title-wiki">
-    <h5 class="artist-title" id="{{img}}"></h5></a>
+    <h5 class="artist-title" id="{{objectID}}"></h5></a>
 
-    <i></i>
+    
   {%endfor%}
 
   

@@ -12,7 +12,7 @@ from form import UserAddForm, LoginForm, UserEditForm, PostForm,EditPostForm
 import json
 import requests
 from random import sample
-from sqlalchemy import func
+from sqlalchemy import func, null
 
 
 CURR_USER_KEY = "curr_user"
@@ -37,14 +37,24 @@ search_base_api = "https://collectionapi.metmuseum.org/public/collection/v1/sear
 objectIDs_api="https://collectionapi.metmuseum.org/public/collection/v1/objects/"
 
 
-@app.route('/searched' )
+@app.route('/searched', methods=["GET", "POST"])
 def search():
     """Show homepage:"""
     search = request.args.get('image')
-    res = requests.get(f"{search_base_api}",params={"q":search, "hasImages": "true"})
-    ten_random = list(res.json()['objectIDs'])[:10]
+    # departmentId = request.form.get('departmentId')
 
-    return render_template('home/search.html',img_ids=ten_random)
+    res = requests.get(f"{search_base_api}hasImages=true&q={search}")
+    # print(departmentId)
+    # &departmentId={departmentId}
+    # print("######################")
+    ten_random = sample(list(res.json()['objectIDs']), 10)
+    inspirations = (Inspiration.query
+                .order_by(Inspiration.id.desc())
+                .limit(15)
+                .all())
+
+
+    return render_template('home/search.html',img_ids=ten_random, inspirations=inspirations)
 
 
 
@@ -264,6 +274,13 @@ def edit_profile():
     else:
         return render_template('users/edit.html', form=form, user=user)
 
+@app.route("/user/<int:user_id>/profile")
+def post_user_info(user_id):
+    """show post and info about user"""
+    user=User.query.get_or_404(user_id)
+        
+    return render_template('posts/user_info.html', user=user)
+
 
 @app.route('/users/<int:user_id>/delete', methods=["POST"])
 def delete_user(user_id):
@@ -280,20 +297,7 @@ def delete_user(user_id):
 
     return redirect("/signup")
 
-@app.route('/users/<int:user_id>/likes', methods=["GET"])
-def show_user_likes(user_id):
-    """Show user likes"""
 
-    if g.user:
-        post = (Post
-                    .query
-                    .filter(Post.user_id==user_id)
-                    .order_by(Post.created_at.desc())
-                    .limit(15)
-                    .all())
-        
-        likes=[post for post in g.user.likes]
-        return render_template('users/likes.html', post=post, likes=likes)
 
 ##############################################################################
 # list shared posts:
@@ -311,12 +315,7 @@ def users_post():
         )
     return render_template('posts/show.html', posts=posts, likes=liked_post_id, likes_on_post=likes_on_post)
 
-@app.route("/user/<int:user_id>/profile")
-def post_user_info(user_id):
-    """show post and info about user"""
-    user=User.query.get_or_404(user_id)
-        
-    return render_template('posts/user_info.html', user=user)
+
 
 @app.route("/posts/<int:post_id>/like",methods=["POST"] )
 def like_a_post(post_id):
@@ -327,7 +326,6 @@ def like_a_post(post_id):
         
     liked_post= Post.query.get_or_404(post_id)
     user_likes= g.user.likes
-
     if liked_post in user_likes:
         g.user.likes= [ like for like in user_likes if like!=liked_post]
     else:
@@ -335,3 +333,64 @@ def like_a_post(post_id):
 
     db.session.commit()
     return redirect("/posts")
+
+@app.route('/users/<int:user_id>/likes', methods=["GET"])
+def show_user_likes(user_id):
+    """Show user likes"""
+
+    if g.user:
+        post = (Post
+                    .query
+                    .filter(Post.user_id==user_id)
+                    .order_by(Post.created_at.desc())
+                    .limit(15)
+                    .all())
+        
+        likes=[post for post in g.user.likes]
+        return render_template('users/likes.html', post=post, likes=likes)
+
+
+##############################################################################
+# Save liked art from MET API and list them 
+
+# @app.route("/inspiration/<int:objectID>/add", methods=["GET", "POST"] )
+# def like_an_art(objectID):
+#     """toggle liked Art. Add an artwork to your list for    later inspiration:
+# #     """
+#     if not g.user:
+#         flash("Access unauthorized.", "danger")
+#         return redirect("/")
+
+#     inspiration = Inspiration(inspiration=objectID, 
+#                       user_id=g.user.id)
+
+#     db.session.add(inspiration)
+#     db.session.commit()
+
+#     liked_art= Inspiration.query.filter_by(inspiration=objectID).first()
+
+    
+#     user_inspiration= g.user.inspiration
+   
+#     if liked_art in user_inspiration:
+#         g.user.inspiration= [ inspiration for inspiration in user_inspiration if inspiration!=liked_art]
+#     else:
+#         g.user.inspiration.append(liked_art)
+
+#     db.session.commit()
+#     return redirect("/searched")
+
+# @app.route('/users/<int:user_id>/saves', methods=["GET"])
+# def show_user_saves(user_id):
+#     """Show user liked """
+
+#     if g.user:
+#         arts = (Inspiration
+#                     .query
+#                     .filter(Inspiration.user_id==user_id)
+#                     .order_by(Inspiration.id.desc())
+#                     .limit(15)
+#                     .all())
+        
+#         inspirations=[inspirations for inspirations in g.user.inspiration]
+#         return render_template('METArt/art-saves.html', arts=arts, inspirations=inspirations)
