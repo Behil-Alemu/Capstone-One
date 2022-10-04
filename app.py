@@ -2,6 +2,7 @@ from crypt import methods
 from email.mime import image
 from re import L
 from tkinter import Image
+import flask
 from urllib import response
 from flask import Flask, request, render_template,  redirect, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
@@ -38,52 +39,10 @@ search_base_api = "https://collectionapi.metmuseum.org/public/collection/v1/sear
 objectIDs_api="https://collectionapi.metmuseum.org/public/collection/v1/objects/"
 
 
-@app.route('/searched', methods=["GET", "POST"])
-def search():
-    """Show homepage:"""
-    search = request.args.get('image')
-    # departmentId = request.form.get('departmentId')
-
-    res = requests.get(f"{search_base_api}hasImages=true&q={search}")
-    # print(departmentId)
-    # &departmentId={departmentId}
-    # print("######################")
-    ten_random = sample(list(res.json()['objectIDs']), 10)
-    inspirations = (Inspiration.query
-                .order_by(Inspiration.id.desc())
-                .limit(15)
-                .all())
-
-
-    return render_template('home/search.html',img_ids=ten_random, inspirations=inspirations)
-
-##############################################################################
-# search  
-@app.route('/by-department', methods=["GET","POST"])
-def by_department():
-    """Show search by department"""
-    departmentId = request.form.get('departmentIds')
-    department_name=choices.get(int(departmentId))
-    res = requests.get(f"{search_base_api}departmentId={departmentId}&q=art")
-    print(department_name)
-    ten_random = sample(list(res.json()['objectIDs']), 10)
-    inspirations = (Inspiration.query
-                .order_by(Inspiration.id.desc())
-                .limit(15)
-                .all())
-
-    return render_template('home/by-department.html',img_ids=ten_random, inspirations=inspirations, department_name=department_name, choices=choices)
-
-
-##############################################################################
-# search
-
-
-
 @app.route('/')
 def homepage():
     """Show homepage:"""
-    res = requests.get(f"{search_base_api}",params={"q":"painting", "hasImages": "true"})
+    res = requests.get(f"{search_base_api}",params={"q":"image", "hasImages": "true"})
     five_random = sample(list(res.json()['objectIDs']), 5)
     img_urls={}
     for rand in range(len(five_random)):
@@ -94,7 +53,40 @@ def homepage():
         if image:
             img_urls[artist] = image         
     return render_template('home/home.html' , img_urls = img_urls, choices=choices)
-   
+############################################################################## query search
+
+@app.route('/searched', methods=["GET", "POST"])
+def search():
+    """Show homepage:"""
+    search = request.args.get('image')
+    res = requests.get(f"{search_base_api}hasImages=true&q={search}")
+
+    ten_random = sample(list(res.json()['objectIDs']), 10)
+    inspirations = (Inspiration.query
+                .order_by(Inspiration.id.desc())
+                .limit(15)
+                .all())
+
+
+    return render_template('home/search.html',img_ids=ten_random, inspirations=inspirations)
+
+##############################################################################
+# search by department 
+@app.route('/by-department', methods=["GET"])
+def by_department():
+    """Show search by department"""
+
+    departmentId = request.args.get('departmentIds')
+    department_name=choices.get(int(departmentId))
+    res = requests.get(f"{search_base_api}departmentId={departmentId}&q=image")
+    print(department_name)
+    ten_random = sample(list(res.json()['objectIDs']), 10)
+    inspirations = (Inspiration.query
+                    .order_by(Inspiration.id.desc())
+                    .limit(15)
+                    .all())
+        
+    return render_template('home/by-department.html',img_ids=ten_random, inspirations=inspirations, department_name=department_name, choices=choices)
 
 
 
