@@ -1,6 +1,6 @@
 from turtle import title
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, SelectField
+from wtforms import StringField, PasswordField, TextAreaField,SelectField
 from wtforms.validators import DataRequired, Email, Length
 
 
@@ -44,8 +44,27 @@ class EditPostForm(FlaskForm):
     description = StringField('Description:', validators=[DataRequired()])
     imageURL = StringField('Your Art URL:', validators=[DataRequired()])
 
-# class DepartmentIdsForm(FlaskForm):
-#     departmentIds = SelectField('Departments', choices=[(1, "American Decorative Arts"), (3, "Ancient Near Eastern Art"),(4, "Arms and Armor"),(5, "Arts of Africa, Oceania, and the Americas"),(6, "Asian Art"),(7, "The Cloisters"),(8, "The Costume Institute"),(9, "Drawings and Prints"),(10, "Egyptian Art"),(11, "European Paintings"),(12, "European Sculpture and Decorative Arts"),(13, "Greek and Roman Art"),(14, "Islamic Art"),(15, "The Robert Lehman Collection"),(16, "The Libraries"),(17, "Medieval Art"),(18,  "Musical Instruments"),(19, "Photographs"),(21, "Modern Art")])
+choices={
+    1: "American Decorative Arts", 
+    3: "Ancient Near Eastern Art",
+    4: "Arms and Armor",
+    5: "Arts of Africa, Oceania, and the Americas",
+    6: "Asian Art",
+    7: "The Cloisters",
+    8: "The Costume Institute",
+    9: "Drawings and Prints",
+    10: "Egyptian Art",
+    11: "European Paintings",
+    12: "European Sculpture and Decorative Arts",
+    13: "Greek and Roman Art",
+    14: "Islamic Art",
+    15: "The Robert Lehman Collection",
+    16: "The Libraries",
+    17: "Medieval Art",
+    18: "Musical Instruments",
+    19: "Photographs",
+    21: "Modern Art"
+}
 
 
  

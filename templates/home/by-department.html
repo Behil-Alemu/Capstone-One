@@ -1,22 +1,28 @@
 {% extends 'base.html' %}
 {% block title %}Look-up MET API{% endblock%}
-{% block body_class %}Home{% endblock %}
+{% block body_class %}Discover by Department{% endblock %}
 
 {% block content %}
 
 <div class="row justify-content-md-center">
   <div class="col-md-7 col-lg-5">
-    <form action="/searched">
-        <input class="form-control mr-lg-7" type="text" placeholder="Search"  name="image">
-          <button class="btn btn-outline-grey my-2 my-lg-0" type="submit">Search</button>
-     </form>
+ 
 
-
-   {% set img_url = "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921" %} 
+   {% set img_url = "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921" %}
 
   {% set google_url = "https://www.google.com/" %}
   {% set NA = "Not Listed" %}
-
+  <h2>Department: {{department_name}}</h2>
+  <form action="/by-department" method="post">
+    <div class="form-group"> 
+      <label for="departmentIds">Select A department</label>
+      <select name="departmentIds" class="selectpicker form-control" id="departmentIds">
+       {% for val,name in choices.items() %}
+       <option value="{{val}}">{{ name }}</option>
+       {% endfor %}
+     </select>
+     <input class="form-control mr-lg-7" type="submit" value="Go!">
+    </form>
   {% for  objectID in img_ids%}
     <img src="{{img_url}}" id="{{objectID}}" class="img-thumbnail" class="card-image">
 

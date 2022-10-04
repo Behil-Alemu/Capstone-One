@@ -6,6 +6,7 @@
 
 <div class="row justify-content-md-center">
   <div class="col-md-7 col-lg-5">
+    <h2>Search for an artwork</h2>
   <form action="/searched" >
     <input class="form-control mr-lg-7" type="text" placeholder="Search"  name="image" id="search_id">
     <button class="btn btn-outline-grey my-2 my-lg-0" type="submit">Search</button>
@@ -13,12 +14,25 @@
 
  {% set img_url = "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921" %}
 
+<h2>or discover them by department</h2>
+<div>
+<form action="/by-department" method="post">
+ <div class="form-group"> 
+   <label for="departmentIds">Select A department</label>
+   <select name="departmentIds" class="selectpicker form-control" id="departmentIds">
+    {% for val,name in choices.items() %}
+    <option value="{{val}}">{{ name }}</option>
+    {% endfor %}
+  </select>
+  <input class="form-control mr-lg-7" type="submit" value="Go!">
+ </form>
+</div> 
+</div>
 
-  {%for name,img in img_urls.items()%}
+
+ {%for name,img in img_urls.items()%}
     <img src="{{img}}" class="img-thumbnail" class="card-image">
-    {%if name == ""%}
-    <p >Artist: <b>NA</b></p>
-    {%else%}
+    {%if name != ""%}
     <p id="p">Artist: <b>{{name}}</b></p>
     {%endif%}
   {%endfor%}
@@ -26,3 +40,4 @@
 </div>
 </div>
   {% endblock %}
+Footer

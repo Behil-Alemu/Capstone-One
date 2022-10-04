@@ -6,9 +6,10 @@ from urllib import response
 from flask import Flask, request, render_template,  redirect, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from matplotlib import artist
+from numpy import choose
 from models import db,  connect_db, User, Post,Likes,Inspiration
 from sqlalchemy.exc import IntegrityError,InvalidRequestError
-from form import UserAddForm, LoginForm, UserEditForm, PostForm,EditPostForm
+from form import UserAddForm, LoginForm, UserEditForm, PostForm,EditPostForm,choices
 import json
 import requests
 from random import sample
@@ -56,6 +57,22 @@ def search():
 
     return render_template('home/search.html',img_ids=ten_random, inspirations=inspirations)
 
+##############################################################################
+# search  
+@app.route('/by-department', methods=["GET","POST"])
+def by_department():
+    """Show search by department"""
+    departmentId = request.form.get('departmentIds')
+    department_name=choices.get(int(departmentId))
+    res = requests.get(f"{search_base_api}departmentId={departmentId}&q=art")
+    print(department_name)
+    ten_random = sample(list(res.json()['objectIDs']), 10)
+    inspirations = (Inspiration.query
+                .order_by(Inspiration.id.desc())
+                .limit(15)
+                .all())
+
+    return render_template('home/by-department.html',img_ids=ten_random, inspirations=inspirations, department_name=department_name, choices=choices)
 
 
 ##############################################################################
@@ -76,7 +93,7 @@ def homepage():
         artist= object_data.get("artistDisplayName")
         if image:
             img_urls[artist] = image         
-    return render_template('home/home.html' , img_urls = img_urls)
+    return render_template('home/home.html' , img_urls = img_urls, choices=choices)
    
 
 

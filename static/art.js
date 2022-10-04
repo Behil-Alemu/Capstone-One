@@ -22,15 +22,14 @@ async function main() {
             imgIds[i].src = imgResponse[i].data["primaryImageSmall"]
             } 
             
-            if (imgResponse[i].data["artistDisplayName"])
-            {
+            if (imgResponse[i].data["artistDisplayName"]){
             artist[i].innerHTML =imgResponse[i].data["artistDisplayName"]
             } 
             title[i].innerHTML =imgResponse[i].data["title"] 
-            if (imgResponse[i].data["artistWikidata_URL"])
-            {
+            if (imgResponse[i].data["artistWikidata_URL"]){
             wikiA[i].href =imgResponse[i].data["artistWikidata_URL"]
-            } 
+            }
+
             if (imgResponse[i].data["objectWikidata_URL"])
             {
             wikiT[i].href =imgResponse[i].data["objectWikidata_URL"]  
