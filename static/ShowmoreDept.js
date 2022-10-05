@@ -1,24 +1,20 @@
 
-let showMore =document.getElementById("showMore");
+let showMoreDP =document.getElementById("showMoreDP");
 
-showMore.addEventListener('click', function(){
-    showmoreObjectIDs();
+showMoreDP.addEventListener('click', function(){
+    showmoreDPIDs();
 })
 
 
 
-
-const search_base_api = "https://collectionapi.metmuseum.org/public/collection/v1/search?"
-
-async function showmoreObjectIDs(){
+async function showmoreDPIDs(){
     // evt.preventDefault()
     let url = new URL(window.location.href);
-    let search = url.searchParams.get("image");
-    let alldata = await $.getJSON(search_base_api,{"q":search, "hasImages": "true"});
-
-    console.log(search)
+    let departmentIds = url.searchParams.get("departmentIds");
+    let alldata = await $.getJSON("https://collectionapi.metmuseum.org/public/collection/v1/search?",{"q":"art", "departmentId": departmentIds });
+    
     let allImage = getMultipleRandom(alldata["objectIDs"], 10)
-
+    console.log(allImage)
     const axiosRequests = []
     for (let i = 0; i < allImage.length; i++) {
         axiosRequests.push(axios.get(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${allImage[i]}`));
@@ -41,7 +37,7 @@ async function showmoreObjectIDs(){
             name= "Not Listed"
           }
 
-          $('#img').append(`
+          $('#imgDP').append(`
             <img  class="img-thumbnail" class="card-image" src="${image}"></img>
             <form method="POST" class="messages-like">
             <button class="
@@ -63,10 +59,13 @@ async function showmoreObjectIDs(){
             <h5>${imgResponse[i].data["title"]}
             </h5></a>`
             )
-        }
         
         }
 
+
+
+    
+}
 
 
 function getMultipleRandom(arr, num) {

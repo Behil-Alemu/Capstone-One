@@ -23,18 +23,11 @@
           <button class="
             btn 
             btn-sm 
-            {{'btn-primary' if post.id in likes else 'btn-secondary'}}"
+            {{'btn-info' if post.id in likes else 'btn-secondary'}}"
           >
-            <i class="fa fa-thumbs-up"></i> 
+           <i class="fa fa-shopping-cart" style="font-size:26px"></i>
           </button>
         </form>
-        <div>
-          <h4>
-            <!-- SELECT count(post_id) FROM likes WHERE user_id =3; -->
-            
-          {{ likes_on_post |length }} likes
-          </h4>
-      </div>
       </li>
     {% endfor %}
   </ul>

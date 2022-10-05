@@ -120,7 +120,7 @@ class Inspiration(db.Model):
 
     inspiration = db.Column(db.Integer, nullable=False, unique=True)
 
-    user_id = db.Column(db.Integer,db.ForeignKey("users.id"), primary_key=True)
+    user_id = db.Column(db.Integer,db.ForeignKey("users.id",ondelete='cascade'))
 
     users = db.relationship('User',backref='inpiration')
 

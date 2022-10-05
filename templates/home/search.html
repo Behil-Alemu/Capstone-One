@@ -21,15 +21,16 @@
   {% for  objectID in img_ids%}
     <img src="{{img_url}}" id="{{objectID}}" class="img-thumbnail" class="card-image">
 
-    <!-- <form method="POST" action="/inspiration/{{objectID}}/add" class="messages-like">
+    <form method="POST" class="messages-like">
       <button class="
         btn 
         btn-sm 
         {{'btn-primary' if objectID in inspirations else 'btn-secondary'}}"
-      >
-        <i class="fa fa-palette"></i> 
+        formaction="/inspiration/{{objectID}}/add">
+
+        <i class="fa fa-paint-brush"></i> 
       </button>
-    </form> -->
+    </form>
     <h4>Artist Name:</h4>
     <a href="{{met_url}}{{objectID}}" class="artist-wiki">
     <h4 class="artist-name" id="{{objectID}}">{{NA}}</h4></a>
@@ -45,30 +46,8 @@
 
 
 <div id="img">
+
   </div>
-
-  <!-- {% for  objectID in img_ids%}
-  <img src="{{img_url}}" id="" class="img-thumbnail" class="card-image">
-
-  <!-- <form method="POST" action="/inspiration/{{objectID}}/add" class="messages-like">
-    <button class="
-      btn 
-      btn-sm 
-      {{'btn-primary' if objectID in inspirations else 'btn-secondary'}}"
-    >
-      <i class="fa fa-palette"></i> 
-    </button>
-  </form> -->
-  <!-- <h4>Artist Name:</h4>
-  <a href="{{met_url}}" class="SMartist-wiki">
-  <h4 class="SMartist-name" id="">{{NA}}</h4></a>
-
-  <h5>Art Title: </h5>
-  <a href="{{met_url}}" class="SMtitle-wiki">
-  <h5 class="SMartist-title" id=""></h5></a> -->
-
-  
-<!-- {%endfor%} -->
 
   <form >
     <input class="btn btn-outline-grey my-2 my-lg-0"  type="button"id="showMore" value="Load More!">

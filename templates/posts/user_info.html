@@ -7,15 +7,16 @@
         <ul >
           <li class="stat">
             <h4>
-              {{ user.posts | length }} posts
+              {{ user.posts | length }} artwork posted
             </h4>
           </li>
-
+          {%if user.bio != None%}
           <li >
             <p >Bio-{{user.bio }}</p>
           </li>
+          {%endif%}
           <li >
-            <p>@{{user.social_media }}</p>
+            <p>Reach out at {{user.email }} for more information</p>
           </li>
         </ul>
         
@@ -28,20 +29,8 @@
     <div class="col-md-7 col-lg-5">
      
       <img src="{{post.imageURL}}"  class="img-thumbnail" alt="">  
-      <form method="POST" action="/posts/{{ post.id }}/like" class="messages-like">
-        <button class="
-          btn 
-          btn-sm 
-          {{'btn-primary' if post.id in likes else 'btn-secondary'}}"
-        >
-          <i class="fa fa-thumbs-up"></i> 
-        </button>
-      </form>
     </div>
     <div>
-      <h4>
-      {{ user.likes | length }} likes
-      </h4>
   </div>
     {% if g.user.id == user.id  %}
     <form>

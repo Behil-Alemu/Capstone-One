@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}THE MET API- UserProfile{% endblock%}
 {% block content %}
-<div class="row">
+
 
     <aside class="col-md-4 col-lg-3 col-sm-12" id="home-aside">
       <div class="card user-card">
@@ -13,33 +13,37 @@
             <p>{{ g.user.username }}</p>
           </a>
           <a href="/users/profile">
-          <i class='fa fa-edit' style='font-size:24px;color:red'></i></a>
+          <i class='fa fa-edit' style='font-size:24px;color:rgb(172, 217, 238)'></i></a>
           <form method="POST" action="/users/{{g.user.id}}/delete" class="form-inline">
             <button class="btn btn-outline-danger btn-sm ml-2">Delete Profile</button>
           </form>
           <ul class="user-stats nav nav-pills">
             <li class="stat">
-              <p class="small">Posts</p>
+              <p>My arts</p>
               <h3>
                 <a href="/users/{{ g.user.id }}">{{ g.user.posts | length }}</a>
               </h3>
             </li>
            
-
+            {% if g.user.bio == None %}
+            <a href="/users/profile">
+              <p>Add Bio and Contact</p></i></a>
+            {%else%}
             <li >
-              <p class="small"><ins>Bio:</ins></p>
-              <p class="small">{{g.user.bio }}</p>
+              <p><ins>Bio:</ins></p>
+              <p >{{g.user.bio }}</p>
             </li>
             <li >
-              <p class="small"><ins>Social Media:</ins></p>
-              <p class="small">@{{g.user.social_media }}</p>
+              <p ><ins>Social Media:</ins></p>
+              <p class="small">{{g.user.social_media }}</p>
             </li>
+            {% endif %}
           </ul>
           
         </div>
       </div>
     </aside>
-    </div>
+
     <div class="row justify-content-md-center">
       <div>
         <a class="nav-link disabled" href="/post/new">Add Post</a>

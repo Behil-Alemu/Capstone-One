@@ -354,7 +354,9 @@ def show_user_likes(user_id):
                     .order_by(Post.created_at.desc())
                     .limit(15)
                     .all())
-        
+        # print(post)
+        # print("##########################")
+
         likes=[post for post in g.user.likes]
         return render_template('users/likes.html', post=post, likes=likes)
 
@@ -362,44 +364,48 @@ def show_user_likes(user_id):
 ##############################################################################
 # Save liked art from MET API and list them 
 
-# @app.route("/inspiration/<int:objectID>/add", methods=["GET", "POST"] )
-# def like_an_art(objectID):
-#     """toggle liked Art. Add an artwork to your list for    later inspiration:
-# #     """
-#     if not g.user:
-#         flash("Access unauthorized.", "danger")
-#         return redirect("/")
+@app.route("/inspiration/<int:objectID>/add", methods=["GET", "POST"] )
+def like_an_art(objectID):
+    """toggle liked Art. Add an artwork to your list for    later inspiration:
+#     """
+    if not g.user:
+        flash("Access unauthorized.Signup or login first", "danger")
+        return redirect("/")
 
-#     inspiration = Inspiration(inspiration=objectID, 
-#                       user_id=g.user.id)
+    if objectID not in g.user.inspiration:
+        inspiration = Inspiration(inspiration=objectID, user_id=g.user.id)
 
-#     db.session.add(inspiration)
-#     db.session.commit()
+        db.session.add(inspiration)
+        db.session.commit()
 
-#     liked_art= Inspiration.query.filter_by(inspiration=objectID).first()
+    return redirect(f"/users/{g.user.id}/saves")
 
-    
-#     user_inspiration= g.user.inspiration
-   
-#     if liked_art in user_inspiration:
-#         g.user.inspiration= [ inspiration for inspiration in user_inspiration if inspiration!=liked_art]
-#     else:
-#         g.user.inspiration.append(liked_art)
+@app.route('/users/<int:user_id>/saves', methods=["GET"])
+def show_user_saves(user_id):
+    """Show user liked """
 
-#     db.session.commit()
-#     return redirect("/searched")
+    if g.user:
+        arts = (Inspiration
+                    .query
+                    .filter(Inspiration.user_id==user_id)
+                    .order_by(Inspiration.id.desc())
+                    .limit(20)
+                    .all())
 
-# @app.route('/users/<int:user_id>/saves', methods=["GET"])
-# def show_user_saves(user_id):
-#     """Show user liked """
 
-#     if g.user:
-#         arts = (Inspiration
-#                     .query
-#                     .filter(Inspiration.user_id==user_id)
-#                     .order_by(Inspiration.id.desc())
-#                     .limit(15)
-#                     .all())
-        
-#         inspirations=[inspirations for inspirations in g.user.inspiration]
-#         return render_template('METArt/art-saves.html', arts=arts, inspirations=inspirations)
+        return render_template('METArt/art-saves.html', arts=arts)
+
+
+@app.route('/inspiration/<int:inspiration_id>/remove', methods=["POST"])
+def delete_inspiration(inspiration_id):
+    """Delete user."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    inspiration=Inspiration.query.get_or_404(inspiration_id)
+    db.session.delete(inspiration)
+    db.session.commit()
+
+    return redirect(f"/users/{g.user.id}/saves")
