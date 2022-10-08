@@ -6,10 +6,11 @@
     <aside class="col-md-4 col-lg-3 col-sm-12" id="home-aside">
       <div class="card user-card">
         <div>
-          <a href="/users/{{ g.user.id }}" class="card-link">
+          
             <img src="{{ g.user.avatar }}"
                  alt="Image for {{ g.user.username }}"
-                 class="card-image">
+                 id="profile-avatar">
+                 <a href="/users/{{ g.user.id }}" class="card-link"></a>
             <p>{{ g.user.username }}</p>
           </a>
           <a href="/users/profile">
@@ -53,7 +54,6 @@
       {%for p in post%}
         <div class="message-area">
           <div class="message-heading">
-            <!-- <a href="/users/{{p.user_id }}">@{{p.user.username }}</a> -->
             <div class="col-md-7 col-lg-5">
               <img src="{{p.imageURL}}"  class="img-thumbnail" alt="">  
             </div>

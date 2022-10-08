@@ -4,7 +4,7 @@ from re import L
 from tkinter import Image
 import flask
 from urllib import response
-from flask import Flask, request, render_template,  redirect, flash, session, g
+from flask import Flask, jsonify, request, render_template,  redirect, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from matplotlib import artist
 from numpy import choose
@@ -53,6 +53,19 @@ def homepage():
         if image:
             img_urls[artist] = image         
     return render_template('home/home.html' , img_urls = img_urls, choices=choices)
+
+@app.route('/five-api')
+def home_api():
+    """Show homepage:"""
+    img_urls=[]
+    res = requests.get(f"{search_base_api}",params={"q":"image", "hasImages": "true"}) 
+    five_random = sample(list(res.json()['objectIDs']), 5) 
+    for rand in range(len(five_random)):
+        object_res = requests.get(f"{objectIDs_api}{five_random[rand]}")
+        img_urls.append(object_res.json())
+
+
+    return img_urls
 ############################################################################## query search
 
 @app.route('/searched', methods=["GET", "POST"])
@@ -203,7 +216,7 @@ def post_add():
 def edit_post(post_id):
     """Add a post:
 
-    Show form if GET. If valid, update message and redirect to user page.
+    Show form if GET. If valid, update post and redirect to user page.
     """
     posts = Post.query.get_or_404(post_id)
     if not g.user:
@@ -354,8 +367,6 @@ def show_user_likes(user_id):
                     .order_by(Post.created_at.desc())
                     .limit(15)
                     .all())
-        # print(post)
-        # print("##########################")
 
         likes=[post for post in g.user.likes]
         return render_template('users/likes.html', post=post, likes=likes)

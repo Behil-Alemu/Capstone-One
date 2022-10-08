@@ -10,14 +10,30 @@ class UserAddForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('E-mail', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[Length(min=6)])
-    avatar = SelectField('Avatar', choices=[('cpp', 'C++'), ('py', 'Python'), ('text', 'Plain Text')])
+    avatar = SelectField('Avatar',
+    default=("https://gravatar.com/avatar/c128c36db79de723f1a5ac114704e211?s=400&d=robohash&r=x", "Avatar 0"),
+    choices=[
+        ('https://gravatar.com/avatar/9b516ce04785a4051f38b639649a14da?s=400&d=robohash&r=x', 'Avatar 1'), 
+        ('https://gravatar.com/avatar/4380c6453db46121719005dd5e6f83dc?s=400&d=robohash&r=x', 'Avatar 2'), 
+    ('https://gravatar.com/avatar/92405a3fcb1d8becb0cb5ba541ffe54d?s=400&d=robohash&r=x', 'Avatar 3'), 
+    ('https://gravatar.com/avatar/86b415df66d63ce9961c57929b1026f7?s=400&d=robohash&r=x','Avatar 4')
+    ]
+    )
 
 class UserEditForm(FlaskForm):
     """Form for editing profile"""
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('E-mail', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[Length(min=6)])
-    avatar = SelectField('Avatar', choices=[('cpp', 'C++'), ('py', 'Python'), ('text', 'Plain Text')])
+    avatar = SelectField('Avatar',
+    default=("https://gravatar.com/avatar/c128c36db79de723f1a5ac114704e211?s=400&d=robohash&r=x", "Avatar 0"),
+    choices=[
+        ('https://gravatar.com/avatar/9b516ce04785a4051f38b639649a14da?s=400&d=robohash&r=x', 'Avatar 1'), 
+        ('https://gravatar.com/avatar/4380c6453db46121719005dd5e6f83dc?s=400&d=robohash&r=x', 'Avatar 2'), 
+    ('https://gravatar.com/avatar/92405a3fcb1d8becb0cb5ba541ffe54d?s=400&d=robohash&r=x', 'Avatar 3'), 
+    ('https://gravatar.com/avatar/86b415df66d63ce9961c57929b1026f7?s=400&d=robohash&r=x','Avatar 4')
+    ]
+    )
     social_media = StringField('(Optional) Social Media @')
     bio=StringField('(Optional) Bio')
 

@@ -10,7 +10,7 @@
       <li class="list-group-item">
         <a href="/posts/{{ post.id  }}" class="message-link"/>
         <a href="/users/{{ post.user.id }}">
-          <img src="{{ post.user.avatar }}" alt="" class="timeline-image">
+          <img src="{{ post.user.avatar }}" alt="" id="profile-avatar">
         </a>
         <div class="message-area">
           <a href="/user/{{post.user.id}}/profile">@{{ post.user.username }}</a>
