@@ -11,5 +11,82 @@
     margin-top: -11px;
     z-index: 1;
     position: relative;
-    box-shadow: 0 1px 1px rgba(136, 153, 166, 0.15);
+    box-shadow: 0 1px 1px rgba(222, 222, 243, 0.15);
   }
+
+
+body {
+    background-color: #e7e7ee;
+    padding-top: 70px;
+}
+
+.jumbotron {
+	color: #284738;
+	background: #d7d7df;
+}
+ 
+@keyframes slide {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+
+    100% {
+        transform: translate3d(-100%, 0, 0);
+    }
+}
+
+.image-scroller {
+    --speed: 20s;
+
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    position: relative;
+}
+
+
+.image-ticker-fade {
+    background: linear-gradient(
+        to right,
+        rgba(117, 127, 144) 0%,
+        rgba(14, 24, 42, 0.01) 20%,
+        rgba(14, 24, 42, 0.01) 80%,
+        rgba(117, 127, 144) 100%
+    );
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 2;
+}
+
+.image-ticker-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: slide var(--speed) linear infinite;
+}
+
+
+img {
+    display: inline-block;
+    margin: 0 0.4rem;
+    size: 20px;
+}
+
+/* button {
+    margin: 5px;
+    padding: 0.8rem 1rem;
+    font-weight: bold;
+    background-color: #00ff00bb;
+    color: white;
+    transform: perspective(100px) translateZ(0%);
+    transition: transform 100ms linear;
+    cursor: pointer;
+}
+*/
+button:hover {
+    transform: perspective(100px) translateZ(-15px);
+    cursor: pointer;
+}  

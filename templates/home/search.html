@@ -4,12 +4,15 @@
 
 {% block content %}
 
-<div class="row justify-content-md-center">
-  <div class="col-md-7 col-lg-5">
+<div class="jumbotron">
+  <div >
+    <h2>Discover more!</h2>
     <form action="/searched">
         <input class="form-control mr-lg-7" type="text" placeholder="Search"  name="image" id="search_id">
           <button class="btn btn-outline-grey my-2 my-lg-0" type="submit">Search</button>
      </form>
+   </div>
+  </div>
 
 
    {% set img_url = "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921" %} 
@@ -19,30 +22,33 @@
   {% set NA = "Not Listed" %}
 
   {% for  objectID in img_ids%}
-    <img src="{{img_url}}" id="{{objectID}}" class="img-thumbnail" class="card-image">
+<div class="row" style = "display : flex; flex-wrap : wrap;">
+  <div class = "col-md-4 col-sm-6">
+    <div class = "thumbnail">
+      <img src="{{img_url}}" id="{{objectID}}" class="img-thumbnail" class="card-image">
 
-    <form method="POST" class="messages-like">
-      <button class="
-        btn 
-        btn-sm 
-        {{'btn-primary' if objectID in inspirations else 'btn-secondary'}}"
-        formaction="/inspiration/{{objectID}}/add">
-
-        <i class="fa fa-paint-brush"></i> 
-      </button>
-    </form>
-    <h4>Artist Name:</h4>
-    <a href="{{met_url}}{{objectID}}" class="artist-wiki">
-    <h4 class="artist-name" id="{{objectID}}">{{NA}}</h4></a>
-
-    <h5>Art Title: </h5>
-    <a href="{{met_url}}{{objectID}}" class="title-wiki">
-    <h5 class="artist-title" id="{{objectID}}"></h5></a>
-
-    
+      <form method="POST" class="messages-like">
+        <button class="
+          btn 
+          btn-sm 
+          {{'btn-primary' if objectID in inspirations else 'btn-secondary'}}"
+          formaction="/inspiration/{{objectID}}/add">
+          <i class="fa fa-paint-brush"></i> 
+        </button>
+      </form>
+      <div class = "caption">
+        <h4>Artist Name:</h4>
+          <a href="{{met_url}}{{objectID}}" class="artist-wiki">
+          <h4 class="artist-name" id="{{objectID}}">{{NA}}</h4></a>
+          <h5>Art Title: </h5>
+          <a href="{{met_url}}{{objectID}}" class="title-wiki">
+        <h5 class="artist-title" id="{{objectID}}"></h5></a>
+      </div>
+    </div>
+  </div>
+</div>  
   {%endfor%}
 
-  
 
 
 <div id="img">
@@ -54,7 +60,5 @@
 </form>
 
 
-</div>
-</div>
 
 {% endblock %}
