@@ -11,8 +11,7 @@
         <input class="form-control mr-lg-7" type="text" placeholder="Search"  name="image" id="search_id">
           <button class="btn btn-outline-grey my-2 my-lg-0" type="submit">Search</button>
      </form>
-   </div>
-  </div>
+ 
 
 
    {% set img_url = "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif?20151024034921" %} 
@@ -22,6 +21,7 @@
   {% set NA = "Not Listed" %}
 
   {% for  objectID in img_ids%}
+<div class="container">
 <div class="row" style = "display : flex; flex-wrap : wrap;">
   <div class = "col-md-4 col-sm-6">
     <div class = "thumbnail">
@@ -43,6 +43,7 @@
           <h5>Art Title: </h5>
           <a href="{{met_url}}{{objectID}}" class="title-wiki">
         <h5 class="artist-title" id="{{objectID}}"></h5></a>
+        </div>
       </div>
     </div>
   </div>
@@ -50,15 +51,23 @@
   {%endfor%}
 
 
+<div class="container">
+  <div class="row" style = "display : flex; flex-wrap : wrap;">
+    <div class = "col-md-4 col-sm-6">
+      <div id="img">
 
-<div id="img">
-
+      </div>
+    </div>
   </div>
+</div>
+
+
 
   <form >
     <input class="btn btn-outline-grey my-2 my-lg-0"  type="button"id="showMore" value="Load More!">
 </form>
-
+</div>
+</div>  
 
 
 {% endblock %}

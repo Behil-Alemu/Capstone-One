@@ -17,7 +17,18 @@
 
 body {
     background-color: #e7e7ee;
-    padding-top: 70px;
+    padding-top: 20px;
+}
+#departmentIds {
+  height: 38px;
+  width: 37rem;
+  border: 1px solid var(--select-border);
+  background-color: #f2ecf9;
+  border-radius: 6px;
+}
+#search_id{
+  background-color:  #f2ecf9;
+
 }
 
 .jumbotron {
@@ -68,11 +79,9 @@ body {
     animation: slide var(--speed) linear infinite;
 }
 
-
 img {
-    display: inline-block;
-    margin: 0 0.4rem;
-    size: 20px;
+  display: inline-block;
+  margin: 0 0.7rem;
 }
 
 /* button {
@@ -86,7 +95,7 @@ img {
     cursor: pointer;
 }
 */
-button:hover {
+/* button:hover {
     transform: perspective(100px) translateZ(-15px);
     cursor: pointer;
-}  
+}   */

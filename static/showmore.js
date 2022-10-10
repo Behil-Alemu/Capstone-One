@@ -53,6 +53,7 @@ async function showmoreObjectIDs(){
               <i class="fa fa-paint-brush"></i> 
             </button>
           </form>
+          <div class = "caption">
             <h4>Artist Name:</h4>
             <a href="https://www.metmuseum.org/art/collection/search/${imgResponse[i].data["objectID"]}">
             <h4>${name}
@@ -61,7 +62,8 @@ async function showmoreObjectIDs(){
             <h5>Art Title: </h5>
             <a href="${imgResponse[i].data["objectWikidata_URL"]}">
             <h5>${imgResponse[i].data["title"]}
-            </h5></a>`
+            </h5></a>
+            </div>`
             )
         }
         

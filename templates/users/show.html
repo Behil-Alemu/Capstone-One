@@ -3,7 +3,7 @@
 {% block content %}
 
 
-    <aside class="col-md-4 col-lg-3 col-sm-12" id="home-aside">
+    <aside class="" id="home-aside">
       <div class="card user-card">
         <div>
           
@@ -21,14 +21,18 @@
           <ul class="user-stats nav nav-pills">
             <li class="stat">
               <p>My arts</p>
-              <h3>
+              <h4>
                 <a href="/users/{{ g.user.id }}">{{ g.user.posts | length }}</a>
-              </h3>
+              </h4>
             </li>
            
             {% if g.user.bio == None %}
+            <li >
             <a href="/users/profile">
-              <p>Add Bio and Contact</p></i></a>
+              <p>Add Bio and Contact</p>
+          
+            </a>
+            </li>
             {%else%}
             <li >
               <p><ins>Bio:</ins></p>
@@ -45,12 +49,12 @@
       </div>
     </aside>
 
-    <div class="row justify-content-md-center">
+    
       <div>
         <a class="nav-link disabled" href="/post/new">Add Post</a>
       </div>
   
-
+  <div class="row justify-content-md-center">
       {%for p in post%}
         <div class="message-area">
           <div class="message-heading">

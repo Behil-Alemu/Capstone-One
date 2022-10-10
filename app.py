@@ -59,7 +59,7 @@ def home_api():
     """Show homepage:"""
     img_urls=[]
     res = requests.get(f"{search_base_api}",params={"q":"image", "hasImages": "true"}) 
-    five_random = sample(list(res.json()['objectIDs']), 5) 
+    five_random = sample(list(res.json()['objectIDs']), 7) 
     for rand in range(len(five_random)):
         object_res = requests.get(f"{objectIDs_api}{five_random[rand]}")
         img_urls.append(object_res.json())
