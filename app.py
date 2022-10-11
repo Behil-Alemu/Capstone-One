@@ -12,7 +12,7 @@ from numpy import choose
 from models import db,  connect_db, User, Post,Likes,Inspiration
 from sqlalchemy.exc import IntegrityError,InvalidRequestError
 from form import UserAddForm, LoginForm, UserEditForm, PostForm,EditPostForm,choices
-import json
+
 import requests
 from random import sample
 from sqlalchemy import func, null
@@ -27,10 +27,10 @@ app = Flask(__name__)
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    '', 'postgresql:///capstone_db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    'DATABASE_URL', 'postgresql:///capstone_db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 app.config['SQLALCHEMY_ECHO'] = True
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'riveroflove986')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "chickenzarecool21837")
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
