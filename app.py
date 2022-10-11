@@ -2,6 +2,7 @@ from crypt import methods
 from email.mime import image
 from re import L
 
+
 import flask
 from urllib import response
 from flask import Flask, jsonify, request, render_template,  redirect, flash, session, g
@@ -23,8 +24,7 @@ CURR_USER_KEY = "curr_user"
 app = Flask(__name__)
 
 
-if __name__ == '__main__':
-    app.run()
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'postgresql://mwwatkfhulrwoy:8496727c232e467325218545dc484a3cc03149b4e8fe6d2bb9e32f89bae40946@ec2-107-23-76-12.compute-1.amazonaws.com:5432/dtp22epjg7bd', 'postgresql:///capstone_db')
@@ -60,6 +60,8 @@ def homepage():
         if image:
             img_urls[artist] = image         
     return render_template('home/home.html' , img_urls = img_urls, choices=choices)
+if __name__ == '__main__':
+    app.run()
 
 @app.route('/five-api')
 def home_api():
