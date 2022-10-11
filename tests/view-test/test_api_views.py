@@ -103,7 +103,7 @@ class UserViewTestCase(TestCase):
     def test_get_objectID(self):
         # local host must be present
         self.maxDiff=None
-        url = "http://127.0.0.1:5000/five-api"
+        url = "https://127.0.0.1:5000/five-api"
         self.client.get("/")
         resp =requests.get(url)
         self.assertEqual(resp.status_code, 200)
