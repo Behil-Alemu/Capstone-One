@@ -23,6 +23,9 @@ CURR_USER_KEY = "curr_user"
 app = Flask(__name__)
 application = app
 
+if __name__ == '__main__':
+    app.run()
+
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'postgresql://mwwatkfhulrwoy:8496727c232e467325218545dc484a3cc03149b4e8fe6d2bb9e32f89bae40946@ec2-107-23-76-12.compute-1.amazonaws.com:5432/dtp22epjg7bd', 'postgresql:///capstone_db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
