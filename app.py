@@ -27,7 +27,7 @@ app = Flask(__name__)
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'postgres://oflfwaenscocik:b7b9d7a9600e2738ee1fdda2f0737e9fcb795d885900b145513f2607105e1f2a@ec2-34-200-205-45.compute-1.amazonaws.com:5432/d9p1qo5hvsjja2', 'postgresql:///capstone_db')
+    'DATABASE_URL', 'postgresql:///capstone_db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "chickenzarecool21837")
