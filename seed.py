@@ -4,14 +4,12 @@ from models import User, Post, Likes, Inspiration, db
 from app import app
 
 # Create all tables
-db.drop_all() 
+with app.app_context(): 
+    db.drop_all() 
 # DROP DATABASE capstone_db createdb capstone_db
-db.create_all()
+    db.create_all()
 
-User.query.delete()
-Post.query.delete()
-Likes.query.delete()
-Inspiration.query.delete()
+
 
 # Add sample employees and departments
 u1 = User(username='SamSMITH', email='SamSMITH@gmail.com', avatar='/static/images/default-pic.png', social_media="@SAM", bio="Love drawing and painting", password="Hashedpassword!")
