@@ -1,5 +1,5 @@
 """User View tests."""
-#    FLASK_ENV=production python -m unittest test_message_views.py
+#     python -m unittest test_message_views.py
 
 
 import os

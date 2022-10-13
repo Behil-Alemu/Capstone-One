@@ -15,7 +15,6 @@ from form import UserAddForm, LoginForm, UserEditForm, PostForm,EditPostForm,cho
 
 import requests
 from random import sample
-from sqlalchemy import func, null
 import os
 
 

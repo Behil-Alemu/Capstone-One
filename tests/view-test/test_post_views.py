@@ -1,6 +1,6 @@
 """post View tests."""
 
-#    FLASK_ENV=production python -m unittest test_post_views.py
+#    python -m unittest test_post_views.py
 
 
 import os
