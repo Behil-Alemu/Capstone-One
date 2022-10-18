@@ -121,9 +121,6 @@ class Inspiration(db.Model):
 
     user_id = db.Column(db.Integer,db.ForeignKey("users.id",ondelete='cascade'))
 
-    users = db.relationship('User',backref='inpiration')
-
-
 def connect_db(app):
     db.app = app
     db.init_app(app)
