@@ -1,16 +1,13 @@
 from crypt import methods
 from email.mime import image
-from re import L
 
 
 import flask
-from urllib import response
-from flask import Flask, jsonify, request, render_template,  redirect, flash, session, g
+from flask import Flask, request, render_template,  redirect, flash, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from matplotlib import artist
-from numpy import choose
 from models import db,  connect_db, User, Post,Likes,Inspiration
-from sqlalchemy.exc import IntegrityError,InvalidRequestError
+from sqlalchemy.exc import IntegrityError
 from form import UserAddForm, LoginForm, UserEditForm, PostForm,EditPostForm,choices
 
 import requests
@@ -22,7 +19,7 @@ CURR_USER_KEY = "curr_user"
 app = Flask(__name__)
 
 
-uri = os.getenv("DATABASE_url")  # or other relevant config var
+uri = os.getenv("DATABASE_URL")  # or other relevant config var
 if uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://", 1)
 
